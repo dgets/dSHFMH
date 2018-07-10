@@ -13,7 +13,9 @@ public class Options {
 	
 	//display options
 	//I think for now we're going to try 25x25 squares for kitt's eyes
-	public final int BoxMaxX = 25;
-	public final int BoxMaxY = 25;
+	public static final int BoxMaxX = 25;
+	public static final int BoxMaxY = 25; 
 	
+	//ouah
+	public static final boolean debugging = true;
 }

@@ -12,12 +12,10 @@ public class HeadsUp extends Application {
 	
 	@Override
 	public void start(Stage world) throws Exception {
-		
-		
 		Group wutGroot = new Group();
 		Scene kR = new Scene(wutGroot, Options.MaxX, Options.MaxY, Color.BLACK);
 		
-		final Canvas ouahPad = new Canvas(250, 250);
+		final Canvas ouahPad = new Canvas(Options.MaxX, Options.MaxY);
 		GraphicsContext gc = ouahPad.getGraphicsContext2D();
 		
 		gc = DisplayArray.initDisplay(gc);
