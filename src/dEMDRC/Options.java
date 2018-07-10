@@ -27,4 +27,5 @@ public class Options {
 	
 	//ouah
 	public static final boolean debugging = true;
+	public static final boolean testing = true;
 }
