@@ -5,17 +5,17 @@ import javafx.scene.paint.Color;
 
 public class DisplayArray {
 	//our shite
-	private int direction = 1;
-	private int location = 1;	//1 - (determineEyesInArray(xSize) - 1)
+	private static int direction = 1;
+	private static int location = 1;	//1 - (determineEyesInArray(xSize) - 1)
 	
 	//getters/setters (retentive for this, to be sure)
 	public int getDirection() {
 		return this.direction;
 	}
 	
-	public int toggleDirection() {
-		this.direction *= -1;
-		return this.direction;
+	public static int toggleDirection() {
+		direction *= -1;
+		return direction;
 	}
 	
 	public int getLocation() {
@@ -26,13 +26,65 @@ public class DisplayArray {
 	 * Method will increment the location of the 'leading' eye pixel properly, reversing
 	 * direction if necessary at either of the far bounds
 	 */
-	public void incLocation() {
+	private static void incLocation() {
 		if (((location == 1) && (direction == -1)) ||
 			((location == (determineEyesInArray(Options.MaxX) - 1)) && (direction == 1))) {
 			location += toggleDirection();
 		} else {
 			location += direction;
 		}
+	}
+	
+	/**
+	 * Method will send the eye to the right, bounce to the left, etc, with the appropriate
+	 * number of trailing eyes remaining lit after start
+	 * 
+	 * @param gc GraphicsContext so that we've got the right object to work with for display
+	 * @return GraphicsContext to be tossed on screen
+	 */
+	public static GraphicsContext swoosh(GraphicsContext gc) {
+		gc = wipeOldAway(gc);
+		
+		incLocation();
+		
+		gc.setFill(Color.RED /*should be Options.fgColor*/);
+		gc.fillRect((location * 50), 50, Options.BoxMaxX, Options.BoxMaxY);
+		
+		return gc;
+	}
+	
+	/**
+	 * Method will wipe the trailing eye for fade
+	 * 
+	 * @param gc
+	 * @return
+	 */
+	private static GraphicsContext wipeOldAway(GraphicsContext gc) {
+		int curLoc;
+		
+		//erase the old - first find the location to wipe
+		/*if ((direction == 1) && (location < Options.LitEyes)) {	//going right, none to erase
+			continue;
+			//return gc;
+		} else*/
+		if ((direction == 1) && (location >= Options.LitEyes)) {	//going right, start wiping
+			curLoc = location - (Options.LitEyes - 1);
+		} /*else if ((direction == -1) && (location > (determineEyesInArray(Options.MaxX) - (Options.LitEyes - 1)))) {
+			//going left, none to erase
+			continue;
+			//return gc;
+		} */ else if ((direction == -1) && (location <= (determineEyesInArray(Options.MaxX) - (Options.LitEyes - 1)))) {
+			//))){	//going left, erase this one
+			curLoc = location + (Options.LitEyes - 1);
+		} else {
+			return gc;
+		}
+		
+		//aaand I want to paint it blaaack...
+		gc.setFill(Color.BLACK /*Options.bgColor*/);
+		gc.fillRect((curLoc * 50), 50, Options.BoxMaxX, Options.BoxMaxY);
+		
+		return gc;
 	}
 	
 	//general methods

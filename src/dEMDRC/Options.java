@@ -1,5 +1,7 @@
 package dEMDRC;
 
+import com.sun.prism.paint.Color;
+
 import javafx.geometry.Rectangle2D;
 import javafx.stage.Screen;
 
@@ -15,6 +17,11 @@ public class Options {
 	//I think for now we're going to try 25x25 squares for kitt's eyes
 	public static final int BoxMaxX = 25;
 	public static final int BoxMaxY = 25; 
+	public static final int LitEyes = 4;
+	public static final Color bgColor = Color.BLACK;
+	public static final Color fgColor = Color.RED;
+	public static final int SessionDurationInMin = 3;
+	public static final int PauseInMS = 10;
 	
 	//ouah
 	public static final boolean debugging = true;
