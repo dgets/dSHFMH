@@ -1,18 +1,17 @@
 package dEMDRC;
 
 import javafx.application.Application;
-import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.stage.Screen;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 public class HeadsUp extends Application {
 	
 	@Override
-	public void start(Stage arg0) throws Exception {
+	public void start(Stage world) throws Exception {
 		
 		
 		Group wutGroot = new Group();
@@ -20,6 +19,13 @@ public class HeadsUp extends Application {
 		
 		final Canvas ouahPad = new Canvas(250, 250);
 		GraphicsContext gc = ouahPad.getGraphicsContext2D();
+		
+		gc = DisplayArray.initDisplay(gc);
+		wutGroot.getChildren().add(ouahPad);
+		
+		world.setScene(kR);
+		world.setTitle("kitt's eyes are on you . . .");
+		world.show();
 	}
 
 }
