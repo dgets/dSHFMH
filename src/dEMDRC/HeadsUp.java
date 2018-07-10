@@ -38,13 +38,13 @@ public class HeadsUp extends Application {
 	}*/
 	
 	private class BounceTask extends TimerTask {
-		private int remaining = 30;	//just testing shit, later based on Options.Duration*
+		//private int remaining = 30;	//just testing shit, later based on Options.Duration*
 		
 		public void run() {
 			DisplayArray.swoosh(gc);
 			
-			if (remaining >= 0) {
-				remaining--;
+			if (DisplayArray.moreRemaining()) {
+				//this.remaining--;
 				gmt.schedule(new BounceTask(), Options.PauseInMS);
 			}
 		}

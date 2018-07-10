@@ -7,6 +7,7 @@ public class DisplayArray {
 	//our shite
 	private static int direction = 1;
 	private static int location = 1;	//1 - (determineEyesInArray(xSize) - 1)
+	private static int remaining = Options.TotalIterations;
 	
 	//getters/setters (retentive for this, to be sure)
 	public int getDirection() {
@@ -20,6 +21,16 @@ public class DisplayArray {
 	
 	public int getLocation() {
 		return this.location;
+	}
+	
+	public static boolean moreRemaining() {
+		if (remaining < 1) {
+			remaining = Options.TotalIterations;
+			return false;
+		} else {
+			remaining--;
+			return true;
+		}
 	}
 	
 	/**
