@@ -47,11 +47,18 @@ public class DisplayArray {
 			try {
 				HeadsUp.blonk.playTone();
 			} catch (Exception ex) {
-				System.err.println("Audio fucked up. . .");
+				System.err.println("Audio fucked up: " + ex.getMessage());
 			}
 			
 		} else {
 			location += direction;
+		}
+		
+		//delay properly heah
+		try {
+			Thread.sleep((long)HeadsUp.getSliderSpeed());
+		} catch (Exception ex) {
+			System.err.println("Thread sleep(); issue: " + ex.getMessage());
 		}
 	}
 	
@@ -131,7 +138,7 @@ public class DisplayArray {
 	 * @param xSize maximum X dimensions of the display bar
 	 * @return number of eye pixels that will fit
 	 */
-	private static int determineEyesInArray(int xSize) {
+	public static int determineEyesInArray(int xSize) {
 		return (int)(xSize / 50);
 	}
 }

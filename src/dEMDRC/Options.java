@@ -21,7 +21,9 @@ public class Options {
 	public static final Color bgColor = Color.BLACK;
 	public static final Color fgColor = Color.RED;
 	public static final int SessionDurationInMin = 3;
-	public static final int PauseInMS = 10;
+	public static final int DefaultPauseInMS = 10;
+	public static final int MinimumPauseInMS = 5;
+	public static final int MaximumPauseInMS = 150;
 	public static final int TotalIterations = 200;	//testing purposes
 	//public static final int TotalIterations = (SessionDurationInMin * 60 * (1000 / PauseInMS));	//production
 	
