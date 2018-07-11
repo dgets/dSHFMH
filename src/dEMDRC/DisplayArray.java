@@ -73,19 +73,9 @@ public class DisplayArray {
 	private static GraphicsContext wipeOldAway(GraphicsContext gc) {
 		int curLoc;
 		
-		//erase the old - first find the location to wipe
-		/*if ((direction == 1) && (location < Options.LitEyes)) {	//going right, none to erase
-			continue;
-			//return gc;
-		} else*/
 		if ((direction == 1) && (location >= Options.LitEyes)) {	//going right, start wiping
 			curLoc = location - (Options.LitEyes - 1);
-		} /*else if ((direction == -1) && (location > (determineEyesInArray(Options.MaxX) - (Options.LitEyes - 1)))) {
-			//going left, none to erase
-			continue;
-			//return gc;
-		} */ else if ((direction == -1) && (location <= (determineEyesInArray(Options.MaxX) - (Options.LitEyes - 1)))) {
-			//))){	//going left, erase this one
+		}  else if ((direction == -1) && (location <= (determineEyesInArray(Options.MaxX) - (Options.LitEyes - 1)))) {
 			curLoc = location + (Options.LitEyes - 1);
 		} else {
 			return gc;

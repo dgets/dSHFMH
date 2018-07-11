@@ -45,10 +45,12 @@ public class HeadsUp extends Application {
 		
 		toggleActive.setOnAction(new ToggleKitt());
 		
-		//timer activation (for testing)
+		//immediate timer activation (for testing)
 		if (Options.testing) { 
 			gmt = new Timer();
 			gmt.schedule(new BounceTask(), Options.PauseInMS);
+			
+			AudioStim.playAudioStim(Options.StereoSide.LEFT);
 		}
 		
 	}
@@ -71,13 +73,7 @@ public class HeadsUp extends Application {
 		
 	}
 	
-	/*private GraphicsContext bounce(GraphicsContext gc) {
-		DisplayArray.swoosh(gc);
-	}*/
-	
 	private class BounceTask extends TimerTask {
-		//private int remaining = 30;	//just testing shit, later based on Options.Duration*
-		
 		public void run() {
 			DisplayArray.swoosh(gc);
 			

@@ -25,7 +25,16 @@ public class Options {
 	public static final int TotalIterations = 200;	//testing purposes
 	//public static final int TotalIterations = (SessionDurationInMin * 60 * (1000 / PauseInMS));	//production
 	
+	//audio options
+	public static final boolean beepForAudio = true;
+	public static final int AStimFreq = 432;
+	public static final int AStimDurInMS = 15;
+	public static final int ASampleRate = 8000;
+	
 	//ouah
 	public static final boolean debugging = true;
 	public static final boolean testing = true;
+	
+	//enums
+	public static enum StereoSide { LEFT, RIGHT };
 }
