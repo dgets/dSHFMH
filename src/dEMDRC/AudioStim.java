@@ -1,51 +1,48 @@
 package dEMDRC;
 
-//import javax.swing.text.DefaultEditorKit;
-import java.awt.Toolkit;
-
-import com.sun.media.jfxmedia.track.AudioTrack;
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.SourceDataLine;
 
 public class AudioStim {
-	private int numSamples = Options.ASampleRate * (Options.AStimDurInMS / 1000);
-	private byte lSamples[] = new byte[numSamples * 2];
-	private byte rSamples[] = new byte[numSamples * 2];
-	/* whoops-- looks like this is only good on 'droid :(
-	 * private AudioTrack leftTrack = new AudioTrack(AudioManger.STREAM_MUSIC, Options.ASampleRate, AudioFormat.CHANNEL_OUT_STEREO,
-	 *											  AudioFormat.ENCODING_PCM_16BIT, (numSamples * 2), AudioTrack.MODE_STATIC); */
-	//private DefaultEditorKit.BeepAction dekBeep = new DefaultEditorKit.BeepAction();
+	byte[] toneBuffer;
 	
-	AudioTrack wutTrack = new AudioTrack(false, numSamples, null, null, null, numSamples, numSamples, numSamples);
+	//constructor
+	public AudioStim() {
+		toneBuffer = new byte[(int)((Options.AStimDurInMS * Options.ASampleRate) / 1000)];
+		
+		createSinWaveBuffer();
+	}
 	
 	/**
-	 * Method initializes the samples array to be played
+	 * I really haven't taken the time to understand the maf magic of what's going on in here yet;
+	 * it wasn't that difficult in college, I just don't care about the accoustic energy physics
+	 * right now :P
 	 */
-	private void initAudioSamples() {
-		//so yeah, I took the time, at one point, to understand the code below, but I really don't remember it any more.  it's
-		//just ripped from a textbook showing design of an audio clip and heavily condensed here
-		for (int ouah = 0; ouah < (numSamples * 2); ouah++) {
-			//wait a sec, this is left & right channel, right?
-			lSamples[ouah] = (byte) (((short)(Math.sin(2 * Math.PI * ouah / (Options.ASampleRate / Options.AStimFreq)) * 32767))
-								      & 0x00ff);
-			lSamples[ouah + 1] = 0;
-			rSamples[ouah++] = 0;
-			rSamples[ouah] = (byte) ((((short)(Math.sin(2 * Math.PI * ouah / (Options.ASampleRate / Options.AStimFreq)) * 32767))
-									 & 0xff00) >>> 8);
+	private void createSinWaveBuffer() {
+		int samples = (int)((Options.AStimDurInMS * Options.ASampleRate) / 1000);
+		
+		double period = (double)(Options.ASampleRate / Options.AStimFreq);
+		for (int ouah = 0; ouah < toneBuffer.length; ouah++) {
+			double angle = 2.0 * Math.PI * (ouah / period);	//yeah, I'm retentive like that
+			toneBuffer[ouah] = (byte)(Math.sin(angle) * 127f);	//wut?
 		}
 	}
 	
-	/*public void initAudioTracks() {
+	/**
+	 * Method fuh-ruckin' plays the tone generated above
+	 * 
+	 * @throws LineUnavailableException
+	 */
+	public void playTone() throws LineUnavailableException {
+		final AudioFormat af = new AudioFormat(Options.ASampleRate,8, 1, true, true);
+		SourceDataLine line = AudioSystem.getSourceDataLine(af);
 		
-	}*/
-	
-	//we're just going to focus on playing the beep right now, since we don't have net access to get better audio manipulation
-	//libraries working here
-	public static void playAudioStim(Options.StereoSide handed) throws Exception {
-		if (Options.beepForAudio) {
-			//well I guess we're out of luck for playing to just one side, at least with this implementation of beeping
-			//((DefaultEditorKit) this.dekBeep).beepAction();
-			Toolkit.getDefaultToolkit().beep();
-		} else {
-			throw new Exception("God ouah");
-		}
+		line.open(af, Options.ASampleRate);
+		line.start();
+		line.write(toneBuffer, 0, toneBuffer.length);
+		line.drain();
+		line.close();
 	}
 }

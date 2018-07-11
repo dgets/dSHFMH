@@ -41,6 +41,15 @@ public class DisplayArray {
 		if (((location == 1) && (direction == -1)) ||
 			((location == (determineEyesInArray(Options.MaxX) - 1)) && (direction == 1))) {
 			location += toggleDirection();
+			
+			//I guess here would be the place for the other stim triggers, since we're
+			//bouncing here
+			try {
+				HeadsUp.blonk.playTone();
+			} catch (Exception ex) {
+				System.err.println("Audio fucked up. . .");
+			}
+			
 		} else {
 			location += direction;
 		}

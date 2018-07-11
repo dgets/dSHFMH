@@ -27,9 +27,9 @@ public class Options {
 	
 	//audio options
 	public static final boolean beepForAudio = true;
-	public static final int AStimFreq = 432;
+	public static final int AStimFreq = 432;	//we'll probably want a higher chakra ;)
 	public static final int AStimDurInMS = 15;
-	public static final int ASampleRate = 8000;
+	public static final int ASampleRate = 16 * 1024;
 	
 	//ouah
 	public static final boolean debugging = true;

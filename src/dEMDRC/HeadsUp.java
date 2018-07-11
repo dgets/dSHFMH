@@ -23,6 +23,8 @@ public class HeadsUp extends Application {
 	private GraphicsContext gc = ouahPad.getGraphicsContext2D();
 	private Button toggleActive = new Button("Start");
 	
+	public static AudioStim blonk = new AudioStim();	//not sure about this being static... audio issues?
+	
 	@Override
 	public void start(Stage world) throws Exception {
 		//testing
@@ -34,6 +36,9 @@ public class HeadsUp extends Application {
 		world.setScene(kR);
 		world.setTitle("kitt's eyes are on you . . .");
 		world.show();
+		
+		//get audio buffer set up
+		//blonk = new AudioStim();
 		
 		//controls
 		HBox dash = new HBox();
@@ -50,7 +55,7 @@ public class HeadsUp extends Application {
 			gmt = new Timer();
 			gmt.schedule(new BounceTask(), Options.PauseInMS);
 			
-			AudioStim.playAudioStim(Options.StereoSide.LEFT);
+			//AudioStim.playAudioStim(Options.StereoSide.LEFT);
 		}
 		
 	}
