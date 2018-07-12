@@ -14,15 +14,25 @@ public class DisplayArray {
 		return this.direction;
 	}
 	
+	public int getLocation() {
+		return this.location;
+	}
+	
+	/**
+	 * Method toggles the direction of kitt's eye motion
+	 * 
+	 * @return int signifying the new direction of motion
+	 */
 	public static int toggleDirection() {
 		direction *= -1;
 		return direction;
 	}
 	
-	public int getLocation() {
-		return this.location;
-	}
-	
+	/**
+	 * More bouncing in store?
+	 * 
+	 * @return boolean
+	 */
 	public static boolean moreRemaining() {
 		if (remaining < 1) {
 			remaining = Options.TotalIterations;
