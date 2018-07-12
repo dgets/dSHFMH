@@ -6,11 +6,20 @@ import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
 
 public class AudioStim {
-	byte[] toneBuffer;
+	private byte[] monoToneBuffer;
+	private byte[] leftStereoToneBuffer, rightStereoToneBuffer;
+	private int bufferLength;
 	
 	//constructor
 	public AudioStim() {
-		toneBuffer = new byte[(int)((Options.AStimDurInMS * Options.ASampleRate) / 1000)];
+		bufferLength = (int)((Options.AStimDurInMS * Options.ASampleRate) / 1000);
+		
+		if (!Options.StereoAudio) { 
+			monoToneBuffer = new byte[bufferLength];
+		} else {
+			leftStereoToneBuffer = new byte[bufferLength * 2];
+			rightStereoToneBuffer = new byte[bufferLength * 2];
+		}
 		
 		createSinWaveBuffer();
 	}
@@ -22,26 +31,51 @@ public class AudioStim {
 	 */
 	private void createSinWaveBuffer() {
 		int samples = (int)((Options.AStimDurInMS * Options.ASampleRate) / 1000);
-		
 		double period = (double)(Options.ASampleRate / Options.AStimFreq);
-		for (int ouah = 0; ouah < toneBuffer.length; ouah++) {
+		
+		for (int ouah = 0; ouah < bufferLength; ouah++) {
 			double angle = 2.0 * Math.PI * (ouah / period);	//yeah, I'm retentive like that
-			toneBuffer[ouah] = (byte)(Math.sin(angle) * 127f);	//wut?
+			if (!Options.StereoAudio) { 
+				monoToneBuffer[ouah] = (byte)(Math.sin(angle) * 127f);	//wut?
+			} else {
+				short nakk = (short)(Math.sin(angle) * 32767);	//not sure about this const value
+				rightStereoToneBuffer[ouah] = (byte)(nakk & 0xFF);	//not sure if the channel side is correct here, going
+				leftStereoToneBuffer[ouah] = (byte)(nakk >> 8);		//off of a shitty text diagram in code example comments
+				rightStereoToneBuffer[ouah + 1] = 0;
+				leftStereoToneBuffer[++ouah] = 0;
+			}
 		}
 	}
 	
 	/**
 	 * Method fuh-ruckin' plays the tone generated above
 	 * 
+	 * @param handed Options.StereoSide enum signifying handedness of the stereo channel to play
 	 * @throws LineUnavailableException
 	 */
-	public void playTone() throws LineUnavailableException {
-		final AudioFormat af = new AudioFormat(Options.ASampleRate,8, 1, true, true);
+	public void playTone(Options.StereoSide handed) throws LineUnavailableException {
+		final AudioFormat af;
+		
+		//I'm thinking that the AudioFormat & SourceDataLine should probably be set up beforehand in order to decrease
+		//latency as much as possible during operations
+		if (!Options.StereoAudio) { 
+			af = new AudioFormat(Options.ASampleRate, 8, 1, true, true);
+		} else {
+			af = new AudioFormat(Options.ASampleRate, 16, 1, true, false);
+		}
 		SourceDataLine line = AudioSystem.getSourceDataLine(af);
 		
 		line.open(af, Options.ASampleRate);
 		line.start();
-		line.write(toneBuffer, 0, toneBuffer.length);
+		
+		if (!Options.StereoAudio) {  
+			line.write(monoToneBuffer, 0, bufferLength);
+		} else if (handed == Options.StereoSide.RIGHT) {
+			line.write(rightStereoToneBuffer, 0, (bufferLength * 2));
+		} else {
+			line.write(leftStereoToneBuffer, 0, (bufferLength * 2));
+		}
+		
 		line.drain();
 		line.close();
 	}

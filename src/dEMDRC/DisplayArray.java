@@ -45,7 +45,13 @@ public class DisplayArray {
 			//I guess here would be the place for the other stim triggers, since we're
 			//bouncing here
 			try {
-				HeadsUp.blonk.playTone();
+				if (!Options.StereoAudio) { 
+					HeadsUp.blonk.playTone(null);
+				} else if (direction == 1) {	//going right (play left)
+					HeadsUp.blonk.playTone(Options.StereoSide.LEFT);
+				} else {
+					HeadsUp.blonk.playTone(Options.StereoSide.RIGHT);
+				}
 			} catch (Exception ex) {
 				System.err.println("Audio fucked up: " + ex.getMessage());
 			}

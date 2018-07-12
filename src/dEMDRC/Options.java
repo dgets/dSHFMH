@@ -28,10 +28,11 @@ public class Options {
 	//public static final int TotalIterations = (SessionDurationInMin * 60 * (1000 / PauseInMS));	//production
 	
 	//audio options
-	public static final boolean beepForAudio = true;
+	public static final boolean BeepForAudio = true;
 	public static final int AStimFreq = 432;	//we'll probably want a higher chakra ;)
 	public static final int AStimDurInMS = 15;
 	public static final int ASampleRate = 16 * 1024;
+	public static final boolean StereoAudio = false;
 	
 	//ouah
 	public static final boolean debugging = true;
