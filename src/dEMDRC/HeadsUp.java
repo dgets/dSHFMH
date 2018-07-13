@@ -1,9 +1,7 @@
 package dEMDRC;
 
 import javafx.application.Application;
-import javafx.collections.ObservableList;
 import javafx.scene.Group;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -11,14 +9,12 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import javafx.event.Event;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 
-import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -52,9 +48,6 @@ public class HeadsUp extends Application {
 		world.setScene(kR);
 		world.setTitle("kitt's eyes are on you . . .");
 		world.show();
-		
-		//get audio buffer set up
-		//blonk = new AudioStim();
 		
 		//controls
 		dash.setVgap(5); dash.setHgap(3);	//a little space between elements
@@ -105,17 +98,8 @@ public class HeadsUp extends Application {
 	 *
 	 */
 	public static void blockInput() {
-		dash.setDisable(true);
-		
 		//we need to gray out or otherwise indicate that the form is not accepting interaction nao
-		/* ObservableList<Node> kiddies = dash.getChildren();
-		//HashMap<Node, double> kidsNOpacities = new HashMap();
-		//so yeah that doesn't work I guess we'll assume 100%, etc
-		
-		for (Node kiddo : kiddies) {
-			kiddo.setOpacity(70);
-		}*/
-		
+		dash.setDisable(true);
 		veil.setVisible(true);
 	}
 	
@@ -126,20 +110,13 @@ public class HeadsUp extends Application {
 	 *
 	 */
 	public static void restoreInput() {
-		dash.setDisable(false);
-		
 		//restore the display to its former glory
-		/*ObservableList<Node> kiddies = dash.getChildren();
-		
-		for (Node kiddo : kiddies) {
-			kiddo.setOpacity(100);
-		}*/
-		
+		dash.setDisable(false);
 		veil.setVisible(false);
 	}
 
 	//weird subclasses
-	private class ToggleKitt implements EventHandler {
+	private class ToggleKitt implements EventHandler<ActionEvent> {
 		private boolean running;
 		
 		//need the constructor nao
@@ -152,7 +129,7 @@ public class HeadsUp extends Application {
 		}
 
 		@Override
-		public void handle(Event arg0) {
+		public void handle(ActionEvent arg0) {
 			running = !running;
 			
 			if (running) {

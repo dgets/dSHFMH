@@ -5,6 +5,7 @@ import com.sun.prism.paint.Color;
 import javafx.geometry.Rectangle2D;
 import javafx.stage.Screen;
 
+@SuppressWarnings("restriction")
 public class Options {
 	//behind the scenes - _HAIGH_
 	private static Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();

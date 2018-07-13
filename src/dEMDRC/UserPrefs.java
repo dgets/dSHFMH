@@ -1,6 +1,6 @@
 package dEMDRC;
 
-import javafx.event.Event;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -8,13 +8,11 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
-public class UserPrefs implements EventHandler {
+public class UserPrefs implements EventHandler<ActionEvent> {
 	private Stage userSetStage = new Stage();
 
 	@Override
-	public void handle(Event arg0) {
-		// TODO find out how much fun it's going to be implementing opening up a new control panel from here instead
-		//		of from HeadsUp
+	public void handle(ActionEvent arg0) {
 		GridPane userSettings = new GridPane();
 		Button saveExit = new Button("Save & Exit");
 		Button abandonExit = new Button("Abandon & Exit");
@@ -41,20 +39,20 @@ public class UserPrefs implements EventHandler {
 		userSetStage.close();
 	}
 	
-	private class SaveNExit implements EventHandler {
+	private class SaveNExit implements EventHandler<ActionEvent> {
 
 		@Override
-		public void handle(Event arg0) {
+		public void handle(ActionEvent arg0) {
 			// TODO implement moar than testing code
 			guhUpDown();
 		}
 		
 	}
 	
-	private class AbandonNExit implements EventHandler {
+	private class AbandonNExit implements EventHandler<ActionEvent> {
 
 		@Override
-		public void handle(Event arg0) {
+		public void handle(ActionEvent arg0) {
 			// TODO moar than testing code, detc
 			guhUpDown();
 		}

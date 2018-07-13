@@ -11,11 +11,11 @@ public class DisplayArray {
 	
 	//getters/setters (retentive for this, to be sure)
 	public int getDirection() {
-		return this.direction;
+		return direction;
 	}
 	
 	public int getLocation() {
-		return this.location;
+		return location;
 	}
 	
 	/**

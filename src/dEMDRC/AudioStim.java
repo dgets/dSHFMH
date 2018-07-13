@@ -30,7 +30,7 @@ public class AudioStim {
 	 * right now :P
 	 */
 	private void createSinWaveBuffer() {
-		int samples = (int)((Options.AStimDurInMS * Options.ASampleRate) / 1000);
+		//int samples = (int)((Options.AStimDurInMS * Options.ASampleRate) / 1000);
 		double period = (double)(Options.ASampleRate / Options.AStimFreq);
 		
 		for (int ouah = 0; ouah < bufferLength; ouah++) {
