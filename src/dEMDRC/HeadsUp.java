@@ -1,7 +1,9 @@
 package dEMDRC;
 
 import javafx.application.Application;
+import javafx.collections.ObservableList;
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -14,6 +16,8 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.event.Event;
 import javafx.event.EventHandler;
+
+import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -25,14 +29,20 @@ public class HeadsUp extends Application {
 	private final Canvas ouahPad = new Canvas(Options.MaxX, Options.MaxY);
 	private GraphicsContext gc = ouahPad.getGraphicsContext2D();
 	private Button toggleActive = new Button("Stop");
+	private Button goUserPrefs = new Button("User Prefs");
 	private static Slider adjustSpeed = new Slider();
+	private static GridPane dash = new GridPane();	//also this needs to be comfortably set below kitt
 	
 	public static AudioStim blonk = new AudioStim();	//not sure about this being static... audio issues?
+	
+	//getters/setters
+	public GraphicsContext getGC() {
+		return gc;
+	}
 	
 	@Override
 	public void start(Stage world) throws Exception {
 		//testing
-		//gc = DisplayArray.initDisplay(gc);
 		gc = DisplayArray.swoosh(gc);
 		wutGroot.getChildren().add(ouahPad);
 		
@@ -45,11 +55,11 @@ public class HeadsUp extends Application {
 		//blonk = new AudioStim();
 		
 		//controls
-		/*HBox dash = new HBox();
-		dash.getChildren().add(toggleActive);*/
-		GridPane dash = new GridPane();
+		dash.setVgap(5); dash.setHgap(3);	//a little space between elements
 		dash.add(new Label("Display Speed"), 1, 0);	//the shorthand is definitely better
-		GridPane.setRowIndex(toggleActive, 1); GridPane.setColumnIndex(toggleActive, 0);
+		dash.add(new Label("User Preferences"), 2, 0);
+		dash.add(goUserPrefs, 2, 1);
+		GridPane.setRowIndex(toggleActive, 1); GridPane.setColumnIndex(toggleActive, 0); //gross longhand
 		adjustSpeed.setMax(Options.MaximumPauseInMS);
 		adjustSpeed.setMin(Options.MinimumPauseInMS);
 		adjustSpeed.setValue(Options.DefaultPauseInMS);
@@ -80,6 +90,42 @@ public class HeadsUp extends Application {
 	 */
 	public static double getSliderSpeed() {
 		return adjustSpeed.getValue();
+	}
+	
+	/**
+	 * Method blocks input from form widgets
+	 * 
+	 * @author sprite
+	 *
+	 */
+	public static void blockInput() {
+		dash.setDisable(true);
+		
+		//we need to gray out or otherwise indicate that the form is not accepting interaction nao
+		ObservableList<Node> kiddies = dash.getChildren();
+		//HashMap<Node, double> kidsNOpacities = new HashMap();
+		//so yeah that doesn't work I guess we'll assume 100%, etc
+		
+		for (Node kiddo : kiddies) {
+			kiddo.setOpacity(70);
+		}
+	}
+	
+	/**
+	 * Method restore input from form widgets
+	 * 
+	 * @author sprite
+	 *
+	 */
+	public static void restoreInput() {
+		dash.setDisable(false);
+		
+		//restore the display to its former glory
+		ObservableList<Node> kiddies = dash.getChildren();
+		
+		for (Node kiddo : kiddies) {
+			kiddo.setOpacity(100);
+		}
 	}
 
 	//weird subclasses
