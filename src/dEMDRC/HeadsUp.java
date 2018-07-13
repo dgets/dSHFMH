@@ -12,6 +12,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.event.Event;
@@ -32,6 +33,7 @@ public class HeadsUp extends Application {
 	private Button goUserPrefs = new Button("User Prefs");
 	private static Slider adjustSpeed = new Slider();
 	private static GridPane dash = new GridPane();	//also this needs to be comfortably set below kitt
+	private static Region veil = new Region();
 	
 	public static AudioStim blonk = new AudioStim();	//not sure about this being static... audio issues?
 	
@@ -56,6 +58,9 @@ public class HeadsUp extends Application {
 		
 		//controls
 		dash.setVgap(5); dash.setHgap(3);	//a little space between elements
+		veil.setStyle("-fx-background-color: rgba(0, 0, 0, 0.3)");
+		veil.setVisible(false);
+		//dash.getColumnConstraints().add(new ColumnConstraints(150));
 		dash.add(new Label("Display Speed"), 1, 0);	//the shorthand is definitely better
 		dash.add(new Label("User Preferences"), 2, 0);
 		dash.add(goUserPrefs, 2, 1);
@@ -72,6 +77,7 @@ public class HeadsUp extends Application {
 		controls.show();
 		
 		toggleActive.setOnAction(new ToggleKitt());
+		goUserPrefs.setOnAction(new UserPrefs());
 		
 		//immediate timer activation (for testing)
 		if (Options.testing) { 
@@ -102,13 +108,15 @@ public class HeadsUp extends Application {
 		dash.setDisable(true);
 		
 		//we need to gray out or otherwise indicate that the form is not accepting interaction nao
-		ObservableList<Node> kiddies = dash.getChildren();
+		/* ObservableList<Node> kiddies = dash.getChildren();
 		//HashMap<Node, double> kidsNOpacities = new HashMap();
 		//so yeah that doesn't work I guess we'll assume 100%, etc
 		
 		for (Node kiddo : kiddies) {
 			kiddo.setOpacity(70);
-		}
+		}*/
+		
+		veil.setVisible(true);
 	}
 	
 	/**
@@ -121,11 +129,13 @@ public class HeadsUp extends Application {
 		dash.setDisable(false);
 		
 		//restore the display to its former glory
-		ObservableList<Node> kiddies = dash.getChildren();
+		/*ObservableList<Node> kiddies = dash.getChildren();
 		
 		for (Node kiddo : kiddies) {
 			kiddo.setOpacity(100);
-		}
+		}*/
+		
+		veil.setVisible(false);
 	}
 
 	//weird subclasses
