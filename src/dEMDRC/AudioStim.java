@@ -26,7 +26,7 @@ public class AudioStim {
 	
 	/**
 	 * I really haven't taken the time to understand the maf magic of what's going on in here yet;
-	 * it wasn't that difficult in college, I just don't care about the accoustic energy physics
+	 * it wasn't that difficult in college, I just don't care about the acoustic energy physics
 	 * right now :P
 	 */
 	private void createSinWaveBuffer() {

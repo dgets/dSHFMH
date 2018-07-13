@@ -6,7 +6,9 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -22,7 +24,7 @@ public class HeadsUp extends Application {
 	private Scene kR = new Scene(wutGroot, Options.MaxX, Options.MaxY, Color.BLACK);
 	private final Canvas ouahPad = new Canvas(Options.MaxX, Options.MaxY);
 	private GraphicsContext gc = ouahPad.getGraphicsContext2D();
-	private Button toggleActive = new Button("Start");
+	private Button toggleActive = new Button("Stop");
 	private static Slider adjustSpeed = new Slider();
 	
 	public static AudioStim blonk = new AudioStim();	//not sure about this being static... audio issues?
@@ -43,15 +45,20 @@ public class HeadsUp extends Application {
 		//blonk = new AudioStim();
 		
 		//controls
-		HBox dash = new HBox();
-		dash.getChildren().add(toggleActive);
+		/*HBox dash = new HBox();
+		dash.getChildren().add(toggleActive);*/
+		GridPane dash = new GridPane();
+		dash.add(new Label("Display Speed"), 1, 0);	//the shorthand is definitely better
+		GridPane.setRowIndex(toggleActive, 1); GridPane.setColumnIndex(toggleActive, 0);
 		adjustSpeed.setMax(Options.MaximumPauseInMS);
 		adjustSpeed.setMin(Options.MinimumPauseInMS);
 		adjustSpeed.setValue(Options.DefaultPauseInMS);
-		dash.getChildren().add(adjustSpeed);
+		GridPane.setRowIndex(adjustSpeed, 1); GridPane.setColumnIndex(adjustSpeed, 1);
+		dash.getChildren().addAll(toggleActive, adjustSpeed);
 		Stage controls = new Stage();
 		Scene manual = new Scene(dash);
 		controls.setScene(manual);
+		controls.setTitle("sooo manipulative . . .");
 		controls.show();
 		
 		toggleActive.setOnAction(new ToggleKitt());
@@ -77,7 +84,16 @@ public class HeadsUp extends Application {
 
 	//weird subclasses
 	private class ToggleKitt implements EventHandler {
-		private boolean running = false;
+		private boolean running;
+		
+		//need the constructor nao
+		public ToggleKitt() {
+			if (Options.testing) {
+				running = true;
+			} else {
+				running = false;
+			}
+		}
 
 		@Override
 		public void handle(Event arg0) {
