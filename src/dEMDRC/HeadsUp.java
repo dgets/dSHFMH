@@ -25,7 +25,7 @@ public class HeadsUp extends Application {
 	private Scene kR = new Scene(wutGroot, Options.MaxX, Options.MaxY, Color.BLACK);
 	private final Canvas ouahPad = new Canvas(Options.MaxX, Options.MaxY);
 	private GraphicsContext gc = ouahPad.getGraphicsContext2D();
-	private Button toggleActive = new Button("Stop");
+	private Button toggleActive = new Button("Start");
 	private Button goUserPrefs = new Button("User Prefs");
 	private static Slider adjustSpeed = new Slider();
 	private static GridPane dash = new GridPane();	//also this needs to be comfortably set below kitt
@@ -65,6 +65,8 @@ public class HeadsUp extends Application {
 		dash.getChildren().addAll(toggleActive, adjustSpeed);
 		Stage controls = new Stage();
 		Scene manual = new Scene(dash);
+		controls.setX(world.getHeight() + world.getX());
+		controls.setY(world.getY() + (world.getHeight() * 1.2));
 		controls.setScene(manual);
 		controls.setTitle("sooo manipulative . . .");
 		controls.show();
@@ -79,6 +81,9 @@ public class HeadsUp extends Application {
 			
 			//AudioStim.playAudioStim(Options.StereoSide.LEFT);
 		}
+		
+		//any init for other objects
+		UserPrefs.setWorldXY(world.getX(), world.getY());	//not working
 		
 	}
 	

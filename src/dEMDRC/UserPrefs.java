@@ -10,6 +10,8 @@ import javafx.stage.Stage;
 
 public class UserPrefs implements EventHandler<ActionEvent> {
 	private Stage userSetStage = new Stage();
+	private static double worldX = -1;
+	private static double worldY = -1;
 
 	@Override
 	public void handle(ActionEvent arg0) {
@@ -30,10 +32,25 @@ public class UserPrefs implements EventHandler<ActionEvent> {
 		Scene userSetScene = new Scene(userSettings);
 		userSetStage.setScene(userSetScene);
 		userSetStage.setTitle("ya just couldn't leave good enough alone...");
+		if ((worldX == -1) || (worldY == -1)) {
+			//schitt has not been initialized properly
+			userSetStage.setX(450); userSetStage.setY(150);
+		} else {
+			//it might be nice to actually center this in the display, instead of doing this half-assed staggering
+			userSetStage.setX(worldX + (Options.MaxY * 3));
+			userSetStage.setY(worldY + (Options.MaxY * 1.25));
+		}
 		userSetStage.show();
 		
 	}
 
+	//getters/setters
+	public static void setWorldXY(double x, double y) {
+		worldX = x;
+		worldY = y;
+	}
+	
+	//general methods, detc
 	private void guhUpDown() {
 		HeadsUp.restoreInput();
 		userSetStage.close();
