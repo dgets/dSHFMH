@@ -74,12 +74,12 @@ public class HeadsUp extends Application {
 		toggleActive.setOnAction(new ToggleKitt());
 		goUserPrefs.setOnAction(new UserPrefs());
 		
+		gmt = new Timer();
+		
 		//immediate timer activation (for testing)
 		if (Options.testing) { 
-			gmt = new Timer();
-			gmt.schedule(new BounceTask(), (Options.DefaultPauseInMS / DisplayArray.determineEyesInArray(Options.MaxX)));
-			
-			//AudioStim.playAudioStim(Options.StereoSide.LEFT);
+			toggleActive.setText("Stop");
+			scheduleBounce();
 		}
 		
 		//any init for other objects
@@ -119,10 +119,17 @@ public class HeadsUp extends Application {
 		dash.setDisable(false);
 		veil.setVisible(false);
 	}
+	
+	/**
+	 * Just a wrapper for scheduling a new bounce task so that we're not duplicating so much code
+	 */
+	private void scheduleBounce() {
+		gmt.schedule(new BounceTask(), (Options.DefaultPauseInMS / DisplayArray.determineEyesInArray(Options.MaxX)));
+	}
 
 	//weird subclasses
 	private class ToggleKitt implements EventHandler<ActionEvent> {
-		private boolean running;
+		public boolean running;
 		
 		//need the constructor nao
 		public ToggleKitt() {
@@ -133,19 +140,29 @@ public class HeadsUp extends Application {
 			}
 		}
 
+		//default button handler
 		@Override
 		public void handle(ActionEvent arg0) {
+			toggle();
+		}
+		
+		//getter/setter (fucking ouah I hate the static dichotomy, need to review that shit in my books)
+		/*public void setRunning(boolean run) {
+			running = run;
+		}*/
+		
+		//for all of those invocations
+		public void toggle() {
 			running = !running;
 			
 			if (running) {
-				gmt.schedule(new BounceTask(), (Options.DefaultPauseInMS / DisplayArray.determineEyesInArray(Options.MaxX)));
+				scheduleBounce();
 				toggleActive.setText("Stop");
 			} else {
 				gmt.cancel();
 				toggleActive.setText("Start");
 			}
 		}
-		
 	}
 	
 	private class BounceTask extends TimerTask {
@@ -155,6 +172,9 @@ public class HeadsUp extends Application {
 			if (DisplayArray.moreRemaining()) {
 				//this.remaining--;
 				gmt.schedule(new BounceTask(), (Options.DefaultPauseInMS / DisplayArray.determineEyesInArray(Options.MaxX)));
+			} else {
+				//we need to change the controls (start/stop) status nao
+				toggleActive.setText("Start");
 			}
 		}
 	}
