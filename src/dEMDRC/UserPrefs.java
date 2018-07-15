@@ -45,7 +45,8 @@ public class UserPrefs implements EventHandler<ActionEvent> {
 		
 		//setting value/adjustment column
 		userSettings.add(new Label("Value"), 1, 0);
-		for (int ouah = 0; ouah < godOuahGlobals.optionControl.length; optCtrl = godOuahGlobals.optionControl[ouah++]) {
+		optCtrl = godOuahGlobals.optionControl[0];
+		for (int ouah = 1; ouah < godOuahGlobals.optionControl.length; optCtrl = godOuahGlobals.optionControl[ouah++]) {
 			switch (optCtrl) {
 				case SLIDER:
 					userSettings.add(new Slider(), 1, (ouah + 2));
