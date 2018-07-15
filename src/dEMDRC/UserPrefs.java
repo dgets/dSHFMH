@@ -48,6 +48,7 @@ public class UserPrefs implements EventHandler<ActionEvent> {
 		}
 		
 		//setting value/adjustment column
+		//NOTE: This still needs to be modified to use the new controlStruct data
 		userSettings.add(new Label("Value"), 1, 0);
 		optCtrl = godOuahGlobals.optionControl[0];
 		for (int ouah = 1; ouah < godOuahGlobals.optionControl.length; optCtrl = godOuahGlobals.optionControl[ouah++]) {

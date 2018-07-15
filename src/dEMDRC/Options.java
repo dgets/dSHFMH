@@ -26,8 +26,8 @@ public class Options {
 	public static final Color fgColor = Color.RED;
 	//timing and duration constants
 	public static final int SessionDurationInMin = 3;
-	public static final int DefaultPauseInMS = 10;
-	public static final int MinimumPauseInMS = 5;
+	public static final int DefaultPauseInMS = 15;
+	public static final int MinimumPauseInMS = 10;
 	public static final int MaximumPauseInMS = 150;
 	public static final int TotalIterations = 500;	//testing purposes
 	//public static final int TotalIterations = (SessionDurationInMin * 60 * (1000 / PauseInMS));	//production
@@ -38,6 +38,10 @@ public class Options {
 	public static final int AStimDurInMS = 15;
 	public static final int ASampleRate = 16 * 1024;
 	public static final boolean StereoAudio = true;
+	private static final int MinAStimFreq = 20;
+	private static final int MaxAStimFreq = 20000;
+	private static final int MinAStimDur = 10;
+	private static final int MaxAStimDur = 250;
 	
 	//ouah
 	public static final boolean debugging = true;
@@ -125,7 +129,59 @@ public class Options {
 			//a better data structure (I think?)
 			for (String ouah : optionText) {
 				nakk.setName(ouah);
-				nakk.setcType(optionControl[cntr++]);
+				nakk.setcType(optionControl[cntr]);
+				
+				//setting individual control specifics
+				switch (ouah) {
+					case "Bar Width":
+						nakk.setMin(640);
+						nakk.setMax(MaxX);
+						nakk.setCurVal(MyKittWidth);
+						break;
+					case "Bar Height":
+						nakk.setMin(BoxMaxY * 3);
+						nakk.setMax(MaxY);
+						nakk.setCurVal(MyKittHeight);
+						break;
+					case "Background Color":
+						nakk.setMin(Color.BLACK.getIntArgbPre());	//not sure about this...
+						nakk.setMax(Integer.MAX_VALUE);
+						nakk.setCurVal(MyBgColor.getIntArgbPre());	//again, :-?(beep)
+						break;
+					case "Foreground Color":
+						nakk.setMin(Color.BLACK.getIntArgbPre());	//not sure about this...
+						nakk.setMax(Integer.MAX_VALUE);
+						nakk.setCurVal(MyFgColor.getIntArgbPre());	//again, :-?(beep)
+						break;
+					case "Total Duration":
+						nakk.setMin(1);
+						nakk.setMax(12);	//arbitrary; will need to look up medical data for EMDR for this value to be proper
+						nakk.setCurVal(MySessionDuration);
+						break;
+					case "Display Speed":
+						nakk.setMin(MinimumPauseInMS);
+						nakk.setMax(MaximumPauseInMS);
+						nakk.setCurVal(MyPauseInMS);
+						break;
+					case "Beep":
+					case "Stereo Audio":
+						nakk.setMin(0);
+						nakk.setMax(1);
+						nakk.setCurVal(0);
+						break;
+					case "Tone Frequency":
+						nakk.setMin(MinAStimFreq);
+						nakk.setMax(MaxAStimFreq);
+						nakk.setCurVal(MyAStimFreq);
+						break;
+					case "Tone Duration":
+						nakk.setMin(MinAStimDur);
+						nakk.setMax(MaxAStimDur);
+						nakk.setCurVal(MyAStimDurInMS);
+						break;
+				}
+				
+				controlStruct.add(nakk);
 			}
 		}
 	}
