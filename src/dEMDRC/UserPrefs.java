@@ -4,7 +4,11 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.ColorPicker;
 import javafx.scene.control.Label;
+import javafx.scene.control.Slider;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
@@ -24,6 +28,7 @@ public class UserPrefs implements EventHandler<ActionEvent> {
 		HeadsUp.blockInput();
 		
 		String optName = null;
+		Options.ControlType optCtrl = null;
 		
 		userSettings.setVgap(5); userSettings.setHgap(3);
 		
@@ -40,6 +45,25 @@ public class UserPrefs implements EventHandler<ActionEvent> {
 		
 		//setting value/adjustment column
 		userSettings.add(new Label("Value"), 1, 0);
+		for (int ouah = 0; ouah < godOuahGlobals.optionControl.length; optCtrl = godOuahGlobals.optionControl[ouah++]) {
+			switch (optCtrl) {
+				case SLIDER:
+					userSettings.add(new Slider(), 1, (ouah + 2));
+					break;
+				case SPECTRUM:
+					//userSettings.add(new Label("In Progress"), 1, (ouah + 2));
+					userSettings.add(new ColorPicker(), 1, (ouah + 2));
+					break;
+				case NUMERIC:
+					userSettings.add(new TextField(), 1, (ouah + 2));
+					break;
+				case TOGGLE:
+					userSettings.add(new CheckBox(), 1, (ouah + 2));
+					break;
+				default:
+					userSettings.add(new Label("Houston, we've had a problem"), 1, (ouah + 2));
+			}
+		}
 		
 		saveExit.setOnAction(new SaveNExit());
 		abandonExit.setOnAction(new AbandonNExit());
