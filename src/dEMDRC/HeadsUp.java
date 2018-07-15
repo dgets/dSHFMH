@@ -38,6 +38,10 @@ public class HeadsUp extends Application {
 		return gc;
 	}
 	
+	/**
+	 * I guess this would be the equivalent of our 'main()' while we're working with javafx
+	 * 
+	 */
 	@Override
 	public void start(Stage world) throws Exception {
 		//testing
