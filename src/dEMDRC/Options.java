@@ -1,6 +1,7 @@
 package dEMDRC;
 
 import java.io.File;
+import java.util.HashMap;
 
 import com.sun.prism.paint.Color;
 
@@ -43,12 +44,20 @@ public class Options {
 	
 	//enums
 	public static enum StereoSide { LEFT, RIGHT };
+	public static enum ControlType { SLIDER, SPECTRUM, NUMERIC, TOGGLE };
 	
-	//color/shade spectrum
-	//public Array Rainbow = new Array();
+	public String[] optionText = { "Bar Width", "Bar Height", "Background Color", "Foreground Color", "Total Duration",
+		    					   "Display Speed", "Beep", "Stereo Audio", "Tone Frequency", "Tone Duration" };
+	public ControlType[] optionControl = { ControlType.SLIDER, ControlType.SLIDER, ControlType.SPECTRUM,
+										   ControlType.SPECTRUM, ControlType.NUMERIC, ControlType.SLIDER,
+										   ControlType.TOGGLE, ControlType.TOGGLE, ControlType.NUMERIC,
+										   ControlType.NUMERIC };
 	
 	//user modifiable values
 	public class UserSet {
+		//available options
+		public HashMap<String, ControlType> availableOptions = new HashMap();
+		
 		//display options
 		//NOTE: we'll be putting window sizes in here at some point, but initially our defaults are good enough; this can
 		//be saved for a beta version
@@ -93,6 +102,16 @@ public class Options {
 			
 			//determine timing details
 			MyTotalIterations = (int)((MySessionDuration * 60 * 1000) / MyPauseInMS);
+		}
+		
+		/**
+		 * Just some internal garbage here
+		 * 
+		 */
+		private void initStructs() {
+			for (int ouah = 0; ouah < optionText.length; ouah++) {
+				availableOptions.put(optionText[ouah], optionControl[ouah]);
+			}
 		}
 	}
 }

@@ -19,15 +19,32 @@ public class UserPrefs implements EventHandler<ActionEvent> {
 		Button saveExit = new Button("Save & Exit");
 		Button abandonExit = new Button("Abandon & Exit");
 		
+		Options godOuahGlobals = new Options();
+		Options.UserSet userOptions = godOuahGlobals.new UserSet();
 		HeadsUp.blockInput();
 		
+		String optName = null;
+		
 		userSettings.setVgap(5); userSettings.setHgap(3);
+		
+		//setting description column
 		userSettings.add(new Label("Setting"), 0, 0);
+		/*for (int ouah = 2; ouah <= (userOptions.availableOptions.length - 3); ouah++) {
+			userSettings.add(new Label(userOptions.availableOptions[ouah - 2]), 0, ouah);
+		}*/
+		
+		for (int ouah = 0; ouah < godOuahGlobals.optionText.length; optName = godOuahGlobals.optionText[ouah++]) {
+			//userOptions.availableOptions.put(optName, godOuahGlobals.optionControl);
+			userSettings.add(new Label(optName), 0, (ouah + 2));
+		}
+		
+		//setting value/adjustment column
 		userSettings.add(new Label("Value"), 1, 0);
+		
 		saveExit.setOnAction(new SaveNExit());
 		abandonExit.setOnAction(new AbandonNExit());
-		userSettings.add(saveExit, 0, 2);
-		userSettings.add(abandonExit, 2, 2);
+		userSettings.add(saveExit, 0, 13);
+		userSettings.add(abandonExit, 2, 13);
 		
 		Scene userSetScene = new Scene(userSettings);
 		userSetStage.setScene(userSetScene);
