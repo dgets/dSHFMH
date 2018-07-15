@@ -1,5 +1,6 @@
 package dEMDRC;
 
+import dEMDRC.Options.ControlType;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
@@ -16,6 +17,10 @@ public class UserPrefs implements EventHandler<ActionEvent> {
 	private Stage userSetStage = new Stage();
 	private static double worldX = -1;
 	private static double worldY = -1;
+	
+	private static Options godOuahGlobals = new Options();
+	private static Options.UserSet userOptions = godOuahGlobals.new UserSet();
+	private static ControlGrid[] prefControls = new ControlGrid[userOptions.availableOptions.size()];
 
 	@Override
 	public void handle(ActionEvent arg0) {
@@ -23,8 +28,7 @@ public class UserPrefs implements EventHandler<ActionEvent> {
 		Button saveExit = new Button("Save & Exit");
 		Button abandonExit = new Button("Abandon & Exit");
 		
-		Options godOuahGlobals = new Options();
-		Options.UserSet userOptions = godOuahGlobals.new UserSet();
+		
 		HeadsUp.blockInput();
 		
 		String optName = null;
@@ -98,6 +102,55 @@ public class UserPrefs implements EventHandler<ActionEvent> {
 		userSetStage.close();
 	}
 	
+	//'regular' subclasses
+	public class ControlGrid {
+		private String name = new String();
+		private ControlType cType;
+		private int min, max, curVal;
+		
+		//getters/setters
+		public String getName() {
+			return name;
+		}
+		
+		public void setName(String name) {
+			this.name = name;
+		}
+		
+		public ControlType getcType() {
+			return cType;
+		}
+		
+		public void setcType(ControlType cType) {
+			this.cType = cType;
+		}
+		
+		public int getMin() {
+			return min;
+		}
+		
+		public void setMin(int min) {
+			this.min = min;
+		}
+		
+		public int getMax() {
+			return max;
+		}
+		
+		public void setMax(int max) {
+			this.max = max;
+		}
+		
+		public int getCurVal() {
+			return curVal;
+		}
+		
+		public void setCurVal(int curVal) {
+			this.curVal = curVal;
+		}
+	}
+	
+	//event handlers
 	private class SaveNExit implements EventHandler<ActionEvent> {
 
 		@Override

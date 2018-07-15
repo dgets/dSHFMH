@@ -1,6 +1,7 @@
 package dEMDRC;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.sun.prism.paint.Color;
@@ -53,10 +54,12 @@ public class Options {
 										   ControlType.TOGGLE, ControlType.TOGGLE, ControlType.NUMERIC,
 										   ControlType.NUMERIC };
 	
+	
 	//user modifiable values
 	public class UserSet {
 		//available options
-		public HashMap<String, ControlType> availableOptions = new HashMap();
+		public HashMap<String, ControlType> availableOptions = new HashMap<String, ControlType>();
+		public ArrayList<UserPrefs.ControlGrid> controlStruct = new ArrayList<UserPrefs.ControlGrid>();
 		
 		//display options
 		//NOTE: we'll be putting window sizes in here at some point, but initially our defaults are good enough; this can
@@ -77,6 +80,7 @@ public class Options {
 		
 		//internal schitt
 		private boolean foundUserSettings;
+		private UserPrefs userPrefsTmp;
 		
 		//constructor(s)
 		public void UserSet() throws Exception {
@@ -89,6 +93,7 @@ public class Options {
 				foundUserSettings = false;
 				
 				//set to defaults and run along
+				//NOTE: this really needs to be changed to a HashMap 8o|
 				MyKittWidth = MaxX; MyKittHeight = MaxY;
 				MyBgColor = bgColor; MyFgColor = fgColor;
 				MySessionDuration = SessionDurationInMin;	//used as the base for MyTotalIterations
@@ -109,8 +114,18 @@ public class Options {
 		 * 
 		 */
 		private void initStructs() {
+			int cntr = 0;
+			UserPrefs.ControlGrid nakk = userPrefsTmp.new ControlGrid();
+			
+			//original (parallel) crap
 			for (int ouah = 0; ouah < optionText.length; ouah++) {
 				availableOptions.put(optionText[ouah], optionControl[ouah]);
+			}
+			
+			//a better data structure (I think?)
+			for (String ouah : optionText) {
+				nakk.setName(ouah);
+				nakk.setcType(optionControl[cntr++]);
 			}
 		}
 	}
