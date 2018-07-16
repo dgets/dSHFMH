@@ -59,7 +59,7 @@ public class Options {
 										   ControlType.SPECTRUM, ControlType.NUMERIC, ControlType.SLIDER,
 										   ControlType.TOGGLE, ControlType.TOGGLE, ControlType.NUMERIC,
 										   ControlType.NUMERIC };
-	public static ArrayList<UserPrefs.ControlGrid> controlStruct = new ArrayList<UserPrefs.ControlGrid>();	
+	public static ArrayList<UserPrefsHandler.ControlGrid> controlStruct = new ArrayList<UserPrefsHandler.ControlGrid>();	
 	
 	//user modifiable values
 	public class UserSet {

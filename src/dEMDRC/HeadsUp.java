@@ -18,7 +18,7 @@ import javafx.event.EventHandler;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import dEMDRC.Options.UserSet;
+//import dEMDRC.Options.UserSet;
 
 public class HeadsUp extends Application {
 	private Timer gmt;
@@ -36,7 +36,7 @@ public class HeadsUp extends Application {
 	private static Options opts = new Options();
 	public static Options.UserSet uSet = opts.new UserSet();
 	public static AudioStim blonk;	//not sure about this being static... audio issues?
-	public static UserPrefs userPrefsDisplay;
+	public static UserPrefsHandler userPrefsDisplay;
 	
 	/**
 	 * I guess this would be the equivalent of our 'main()' while we're working with javafx
@@ -77,7 +77,7 @@ public class HeadsUp extends Application {
 		controls.show();
 		
 		toggleActive.setOnAction(new ToggleKitt());
-		goUserPrefs.setOnAction(userPrefsDisplay = new UserPrefs());
+		goUserPrefs.setOnAction(userPrefsDisplay = new UserPrefsHandler());
 		
 		gmt = new Timer();
 		
