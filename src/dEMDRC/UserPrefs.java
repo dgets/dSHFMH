@@ -20,9 +20,6 @@ public class UserPrefs implements EventHandler<ActionEvent> {
 	
 	private static double worldX = -1;
 	private static double worldY = -1;
-	
-	//private static Options godOuahGlobals = new Options();
-	//private static Options.UserSet userOptions = godOuahGlobals.new UserSet();
 
 	@Override
 	public void handle(ActionEvent arg0) {
@@ -30,12 +27,8 @@ public class UserPrefs implements EventHandler<ActionEvent> {
 		Button saveExit = new Button("Save & Exit");
 		Button abandonExit = new Button("Abandon & Exit");
 		
-		/*Options opts = new Options();
-		Options.UserSet uSet = opts.new UserSet();*/
-		
 		HeadsUp.blockInput();
 		uSet.initStructs();
-		//ControlGrid[] prefControls = new ControlGrid[opts.optionText.length];	//wtF-f-f not initialized?
 		
 		int cntr = 2;
 		
@@ -46,17 +39,12 @@ public class UserPrefs implements EventHandler<ActionEvent> {
 		userSettings.add(new Label("Value"), 1, 0);
 		
 		if (Options.debugging) {
-			System.out.println("Initializing prefControls . . ");
+			System.out.println("\nInitializing prefControls . . ");
 			System.out.println("Options.controlStruct.size() = " + Options.controlStruct.size());
-			//System.out.println("HeadsUp.userSettings.availableOptions.size() = " + HeadsUp.userSettings.availableOptions.size());
-			System.out.println("uSet.availableOptions.size() = " + uSet.availableOptions.size());
+			System.out.println("uSet.availableOptions.size() = " + uSet.availableOptions.size() + "\n");
 		}
 		
-		//since the below for loop isn't working, let's try this (constructor doesn't seem to be initializing the individual
-		//array members)
-		/*for (int cntr2 = 0; cntr2 < HeadsUp.userSettings.availableOptions.size(); cntr2++) {
-			
-		}*/
+		
 		for (ControlGrid prefCtrl : Options.controlStruct) {
 			if (Options.debugging) {
 				System.out.println("Adding prefCtrl: " + prefCtrl.getName());
@@ -83,34 +71,6 @@ public class UserPrefs implements EventHandler<ActionEvent> {
 			}
 			cntr++;
 		}
-		/*for (int ouah = 0; ouah < godOuahGlobals.optionText.length; optName = godOuahGlobals.optionText[ouah++]) {
-			//userOptions.availableOptions.put(optName, godOuahGlobals.optionControl);
-			userSettings.add(new Label(optName), 0, (ouah + 2));
-		}
-		
-		//setting value/adjustment column
-		//NOTE: This still needs to be modified to use the new controlStruct data
-		userSettings.add(new Label("Value"), 1, 0);
-		optCtrl = godOuahGlobals.optionControl[0];
-		for (int ouah = 1; ouah < godOuahGlobals.optionControl.length; optCtrl = godOuahGlobals.optionControl[ouah++]) {
-			switch (optCtrl) {
-				case SLIDER:
-					userSettings.add(new Slider(), 1, (ouah + 2));
-					break;
-				case SPECTRUM:
-					//userSettings.add(new Label("In Progress"), 1, (ouah + 2));
-					userSettings.add(new ColorPicker(), 1, (ouah + 2));
-					break;
-				case NUMERIC:
-					userSettings.add(new TextField(), 1, (ouah + 2));
-					break;
-				case TOGGLE:
-					userSettings.add(new CheckBox(), 1, (ouah + 2));
-					break;
-				default:
-					userSettings.add(new Label("Houston, we've had a problem"), 1, (ouah + 2));
-			}
-		}*/
 		
 		saveExit.setOnAction(new SaveNExit());
 		abandonExit.setOnAction(new AbandonNExit());
@@ -206,7 +166,7 @@ public class UserPrefs implements EventHandler<ActionEvent> {
 
 		@Override
 		public void handle(ActionEvent arg0) {
-			// TODO implement moar than testing code
+			//TODO implement moar than testing code
 			guhUpDown();
 		}
 		
@@ -216,7 +176,7 @@ public class UserPrefs implements EventHandler<ActionEvent> {
 
 		@Override
 		public void handle(ActionEvent arg0) {
-			// TODO moar than testing code, detc
+			//TODO moar than testing code, detc
 			guhUpDown();
 		}
 		

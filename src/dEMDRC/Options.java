@@ -6,7 +6,6 @@ import java.util.HashMap;
 
 import com.sun.prism.paint.Color;
 
-import dEMDRC.UserPrefs.ControlGrid;
 import javafx.geometry.Rectangle2D;
 import javafx.stage.Screen;
 
@@ -65,7 +64,6 @@ public class Options {
 		//available options
 		public HashMap<String, ControlType> availableOptions = new HashMap<String, ControlType>();
 		
-		
 		//display options
 		//NOTE: we'll be putting window sizes in here at some point, but initially our defaults are good enough; this can
 		//be saved for a beta version
@@ -85,7 +83,6 @@ public class Options {
 		
 		//internal schitt
 		private boolean foundUserSettings;
-		//private UserPrefs userPrefsTmp;
 		
 		//constructor(s)
 		public UserSet() {			
@@ -135,7 +132,7 @@ public class Options {
 				}
 			}
 			
-			//a better data structure (I think?)
+			//a better data structure
 			for (String ouah : optionText) {
 				min = -1; max = -1; cur = -1;
 				

@@ -18,8 +18,6 @@ import javafx.event.EventHandler;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import dEMDRC.Options.UserSet;
-
 public class HeadsUp extends Application {
 	private Timer gmt;
 	
@@ -34,8 +32,6 @@ public class HeadsUp extends Application {
 	private static Region veil = new Region();
 	
 	public static AudioStim blonk = new AudioStim();	//not sure about this being static... audio issues?
-	private static Options nang = new Options();	//yes, this & next ARE used (in UserPrefs.handle())
-	//public Options.UserSet userSettings = nang.new UserSet(); 
 	public static UserPrefs userPrefsDisplay;
 	
 	//getters/setters
@@ -49,9 +45,10 @@ public class HeadsUp extends Application {
 	 */
 	@Override
 	public void start(Stage world) throws Exception {
-		//testing
-		gc = DisplayArray.swoosh(gc);
-		wutGroot.getChildren().add(ouahPad);
+		if (Options.testing) { 
+			gc = DisplayArray.swoosh(gc);
+			wutGroot.getChildren().add(ouahPad);
+		}
 		
 		//eyes array
 		world.setScene(kR);
@@ -82,7 +79,6 @@ public class HeadsUp extends Application {
 		
 		toggleActive.setOnAction(new ToggleKitt());
 		goUserPrefs.setOnAction(userPrefsDisplay = new UserPrefs());
-		//userSettings.initStructs();
 		
 		gmt = new Timer();
 		
@@ -157,10 +153,6 @@ public class HeadsUp extends Application {
 		}
 		
 		//getter/setter (fucking ouah I hate the static dichotomy, need to review that shit in my books)
-		/*public void setRunning(boolean run) {
-			running = run;
-		}*/
-		
 		//for all of those invocations
 		public void toggle() {
 			running = !running;

@@ -52,8 +52,9 @@ public class DisplayArray {
 			((location == (determineEyesInArray(Options.MaxX) - 1)) && (direction == 1))) {
 			location += toggleDirection();
 			
-			//I guess here would be the place for the other stim triggers, since we're
-			//bouncing here
+			/*
+			 * other stim triggers go here, until we've got better structure in the OO
+			 */
 			try {
 				if (!Options.StereoAudio) { 
 					HeadsUp.blonk.playTone(null);

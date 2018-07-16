@@ -38,7 +38,7 @@ public class AudioStim {
 			if (!Options.StereoAudio) { 
 				monoToneBuffer[ouah] = (byte)(Math.sin(angle) * 127f);	//wut?
 			} else {
-				short nakk = (short)(Math.sin(angle) * 32767);	//not sure about this const value
+				short nakk = (short)(Math.sin(angle) * 32767);		//not sure about this const value
 				rightStereoToneBuffer[ouah] = (byte)(nakk & 0xFF);	//not sure if the channel side is correct here, going
 				leftStereoToneBuffer[ouah] = (byte)(nakk >> 8);		//off of a shitty text diagram in code example comments
 				rightStereoToneBuffer[ouah + 1] = 0;
