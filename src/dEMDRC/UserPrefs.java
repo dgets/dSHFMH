@@ -21,20 +21,20 @@ public class UserPrefs implements EventHandler<ActionEvent> {
 
 	@Override
 	public void handle(ActionEvent arg0) {
-		GridPane userSettings = new GridPane();
+		GridPane userSettingsGrid = new GridPane();
 		Button saveExit = new Button("Save & Exit");
 		Button abandonExit = new Button("Abandon & Exit");
 		
 		HeadsUp.blockInput();
-		//HeadsUp.uSet.initStructs();
 		
 		int cntr = 2;
 		
-		userSettings.setVgap(5); userSettings.setHgap(3);
+		userSettingsGrid.setVgap(5); userSettingsGrid.setHgap(3);
 		
 		//setting description column
-		userSettings.add(new Label("Setting"), 0, 0);
-		userSettings.add(new Label("Value"), 1, 0);
+		//NOTE: these need to stand out a little bit; find out how to mess with the font & attributes
+		userSettingsGrid.add(new Label("Setting"), 0, 0);
+		userSettingsGrid.add(new Label("Value"), 1, 0);
 		
 		if (Options.debugging) {
 			System.out.println("\nInitializing prefControls . . ");
@@ -47,34 +47,34 @@ public class UserPrefs implements EventHandler<ActionEvent> {
 				System.out.println("Adding prefCtrl: " + prefCtrl.getName());
 			}
 			
-			userSettings.add(new Label(prefCtrl.getName()), 0, cntr);
+			userSettingsGrid.add(new Label(prefCtrl.getName()), 0, cntr);
 			switch (prefCtrl.getCType()) {
 				case SLIDER:
-					userSettings.add(new Slider(prefCtrl.getMin(), prefCtrl.getMax(), prefCtrl.getCurVal()), 1, cntr);
+					userSettingsGrid.add(new Slider(prefCtrl.getMin(), prefCtrl.getMax(), prefCtrl.getCurVal()), 1, cntr);
 					break;
 				case SPECTRUM:	//need to figure out how to turn an int into a Color?
-					//userSettings.add(new Label("In Progress"), 1, (ouah + 2));
-					userSettings.add(new ColorPicker(), 1, cntr);
+					userSettingsGrid.add(new Label("In Progress"), 1, cntr);
+					//userSettingsGrid.add(new ColorPicker(), 1, cntr);
 					break;
 				case NUMERIC:
-					userSettings.add(new TextField(), 1, cntr);
-					userSettings.add(new TextField(Integer.toString(prefCtrl.getCurVal())), 1, cntr);
+					userSettingsGrid.add(new TextField(), 1, cntr);
+					userSettingsGrid.add(new TextField(Integer.toString(prefCtrl.getCurVal())), 1, cntr);
 					break;
 				case TOGGLE:
-					userSettings.add(new CheckBox(prefCtrl.getName()), 1, cntr);
+					userSettingsGrid.add(new CheckBox(prefCtrl.getName()), 1, cntr);
 					break;
 				default:
-					userSettings.add(new Label("Houston, we've had a problem"), 1, cntr);
+					userSettingsGrid.add(new Label("Houston, we've had a problem"), 1, cntr);
 			}
 			cntr++;
 		}
 		
 		saveExit.setOnAction(new SaveNExit());
 		abandonExit.setOnAction(new AbandonNExit());
-		userSettings.add(saveExit, 0, 13);
-		userSettings.add(abandonExit, 2, 13);
+		userSettingsGrid.add(saveExit, 0, 13);
+		userSettingsGrid.add(abandonExit, 2, 13);
 		
-		Scene userSetScene = new Scene(userSettings);
+		Scene userSetScene = new Scene(userSettingsGrid);
 		userSetStage.setScene(userSetScene);
 		userSetStage.setTitle("ya just couldn't leave good enough alone...");
 		if ((worldX == -1) || (worldY == -1)) {

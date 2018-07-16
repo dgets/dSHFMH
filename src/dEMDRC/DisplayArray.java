@@ -1,5 +1,7 @@
 package dEMDRC;
 
+import javax.sound.sampled.LineUnavailableException;
+
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
@@ -65,7 +67,7 @@ public class DisplayArray {
 				} else {
 					HeadsUp.blonk.playTone(Options.StereoSide.RIGHT);
 				}
-			} catch (Exception ex) {
+			} catch (LineUnavailableException ex) {
 				System.err.println("Audio fucked up: " + ex.getMessage());
 			}
 			

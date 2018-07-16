@@ -35,7 +35,7 @@ public class Options {
 	//public static final int TotalIterations = (SessionDurationInMin * 60 * (1000 / PauseInMS));	//production
 	
 	//audio options
-	public static final boolean BeepForAudio = true;
+	public static final boolean BeepForAudio = false;
 	public static final int AStimFreq = 432;	//we'll probably want a higher chakra ;)
 	public static final int AStimDurInMS = 15;
 	public static final int ASampleRate = 16 * 1024;
@@ -70,7 +70,7 @@ public class Options {
 		//NOTE: we'll be putting window sizes in here at some point, but initially our defaults are good enough; this can
 		//be saved for a beta version
 		//NOTE: we're also changing this to use a HashMap now, because eff this
-		public int MyKittWidth, MyKittHeight;
+		/*public int MyKittWidth, MyKittHeight;
 		//we can work with window positions at that point, too
 		public Color MyBgColor, MyFgColor;
 		
@@ -79,7 +79,7 @@ public class Options {
 		
 		//audio
 		public boolean MyBeepForAudio, MyStereoAudio;
-		public int MyAStimFreq, MyAStimDurInMS;
+		public int MyAStimFreq, MyAStimDurInMS;*/
 		
 		//new structure for the customized settings
 		//obviously, with this rudimentary implementation, we're going to have to deal with conversion of Colors & booleans
@@ -104,13 +104,13 @@ public class Options {
 				
 				//set to defaults and run along
 				//NOTE: this really needs to be changed to a HashMap 8o| (see initStructs())
-				MyKittWidth = MaxX; MyKittHeight = MaxY;
+				/*MyKittWidth = MaxX; MyKittHeight = MaxY;
 				MyBgColor = bgColor; MyFgColor = fgColor;
 				MySessionDuration = SessionDurationInMin;	//used as the base for MyTotalIterations
 				MyPauseInMS = DefaultPauseInMS;
 				MyBeepForAudio = BeepForAudio;
 				MyStereoAudio = StereoAudio;
-				MyAStimFreq = AStimFreq; MyAStimDurInMS = AStimDurInMS;
+				MyAStimFreq = AStimFreq; MyAStimDurInMS = AStimDurInMS;*/
 			} else {
 				//foundUserSettings = true;		//I'm really starting to think that we don't need this variable
 				try {
@@ -122,7 +122,7 @@ public class Options {
 			}
 			
 			//determine timing details
-			MyTotalIterations = (int)((MySessionDuration * 60 * 1000) / MyPauseInMS);
+			//MyTotalIterations = (int)((MySessionDuration * 60 * 1000) / MyPauseInMS);
 		}
 		
 		//getters/setters
@@ -183,32 +183,32 @@ public class Options {
 					case "Bar Width":
 						min = 640;
 						max = MaxX;
-						cur = MyKittWidth;
+						cur = max;
 						break;
 					case "Bar Height":
 						min = (BoxMaxY * 3);
 						max = MaxY;
-						cur = MyKittHeight;
+						cur = max;
 						break;
 					case "Background Color":
-						min = Color.BLACK.getIntArgbPre();	//not sure about this...
+						min = 0;	//Color.BLACK.getIntArgbPre();	//not sure about this...
 						max = Integer.MAX_VALUE;
-						cur = MyBgColor.getIntArgbPre();	//again, :-?(beep)
+						cur = 0;	//MyBgColor.getIntArgbPre();	//again, :-?(beep)
 						break;
 					case "Foreground Color":
-						min = Color.BLACK.getIntArgbPre();	//not sure about this...
+						min = 0;	//Color.BLACK.getIntArgbPre();	//not sure about this...
 						max = Integer.MAX_VALUE;
-						cur = MyFgColor.getIntArgbPre();	//again, :-?(beep)
+						cur = 0;	//MyFgColor.getIntArgbPre();	//again, :-?(beep)
 						break;
 					case "Total Duration":
 						min = 1;
 						max = 12;	//arbitrary; will need to look up medical data for EMDR for this value to be proper
-						cur = MySessionDuration;
+						cur = SessionDurationInMin;
 						break;
 					case "Display Speed":
 						min = MinimumPauseInMS;
 						max = MaximumPauseInMS;
-						cur = MyPauseInMS;
+						cur = DefaultPauseInMS;
 						break;
 					case "Beep":
 					case "Stereo Audio":
@@ -219,12 +219,12 @@ public class Options {
 					case "Tone Frequency":
 						min = MinAStimFreq;
 						max = MaxAStimFreq;
-						cur = MyAStimFreq;
+						cur = AStimFreq;
 						break;
 					case "Tone Duration":
 						min = MinAStimDur;
 						max = MaxAStimDur;
-						cur = MyAStimDurInMS;
+						cur = AStimDurInMS;
 						break;
 				}
 				

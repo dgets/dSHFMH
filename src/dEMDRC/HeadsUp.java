@@ -33,10 +33,10 @@ public class HeadsUp extends Application {
 	private static GridPane dash = new GridPane();	//also this needs to be comfortably set below kitt
 	private static Region veil = new Region();
 	
-	public static AudioStim blonk = new AudioStim();	//not sure about this being static... audio issues?
-	public static UserPrefs userPrefsDisplay;
 	private static Options opts = new Options();
 	public static Options.UserSet uSet = opts.new UserSet();
+	public static AudioStim blonk;	//not sure about this being static... audio issues?
+	public static UserPrefs userPrefsDisplay;
 	
 	/**
 	 * I guess this would be the equivalent of our 'main()' while we're working with javafx
@@ -81,6 +81,12 @@ public class HeadsUp extends Application {
 		
 		gmt = new Timer();
 		
+		if (Options.debugging) {
+			System.out.println("uSet.initStructs() is on deck.");
+		}
+		uSet.initStructs();
+		blonk = new AudioStim();
+		
 		//immediate timer activation (for testing)
 		if (Options.testing) { 
 			toggleActive.setText("Stop");
@@ -89,7 +95,6 @@ public class HeadsUp extends Application {
 		
 		//any init for other objects
 		userPrefsDisplay.setWorldXY(world.getX(), world.getY());	//working?
-		uSet.initStructs();
 	}
 	
 	/**
