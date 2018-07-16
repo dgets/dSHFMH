@@ -1,5 +1,9 @@
 package dEMDRC;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
 import dEMDRC.Options.ControlType;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -15,13 +19,13 @@ import javafx.stage.Stage;
 
 public class UserPrefsHandler implements EventHandler<ActionEvent> {
 	private Stage userSetStage = new Stage();
+	private GridPane userSettingsGrid = new GridPane();
 	
 	private double worldX = -1;
 	private double worldY = -1;
 
 	@Override
 	public void handle(ActionEvent arg0) {
-		GridPane userSettingsGrid = new GridPane();
 		Button saveExit = new Button("Save & Exit");
 		Button abandonExit = new Button("Abandon & Exit");
 		
@@ -163,9 +167,40 @@ public class UserPrefsHandler implements EventHandler<ActionEvent> {
 		@Override
 		public void handle(ActionEvent arg0) {
 			//TODO implement moar than testing code
-			guhUpDown();
+			try {
+				doSave();
+			} catch (Exception ex) {
+				System.err.println(ex.getMessage());
+			}
+				guhUpDown();
 		}
 		
+		private Options.UserSet doSave() throws Exception {
+			File uSettings = new File(HeadsUp.uSet.settingsPath);
+			if (uSettings.exists()) {
+				//wipe the old
+				try {
+					uSettings.delete();
+					uSettings.createNewFile();
+					uSettings.setWritable(true);
+				} catch (IOException ex) {
+					System.err.println("Issues trying to save settings!\nMsg: " + ex.getMessage());
+					throw new Exception("Unable to save user settings");
+				}
+			}
+			
+			//waiting for testing feedback
+			//FileOutputStream gush = new FileOutputStream(uSettings);
+			
+			for (int cntr = 2; cntr < userSettingsGrid.getChildren().size(); cntr++) {
+				if (Options.debugging || Options.testing) {
+					System.out.println(userSettingsGrid.getChildren().get(cntr).toString());
+				}
+			}
+			
+			//just so we can see our feedback to figger it out
+			return null;
+		}
 	}
 	
 	private class AbandonNExit implements EventHandler<ActionEvent> {
@@ -173,6 +208,7 @@ public class UserPrefsHandler implements EventHandler<ActionEvent> {
 		@Override
 		public void handle(ActionEvent arg0) {
 			//TODO moar than testing code, detc
+			//erm, actually this may be all that we need for the 'AbandonNExit' button handler
 			guhUpDown();
 		}
 		

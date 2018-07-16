@@ -87,7 +87,7 @@ public class Options {
 		public HashMap<String, Integer> customizedSettings = new HashMap<String, Integer>();
 		
 		//user settings location
-		private String settingsPath = new String(".dEMDRrc");
+		public final String settingsPath = new String(".dEMDRrc");
 		
 		//internal schitt
 		private boolean foundUserSettings;
