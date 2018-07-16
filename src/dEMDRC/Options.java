@@ -113,26 +113,17 @@ public class Options {
 		}
 		
 		/**
-		 * Just some internal garbage here
-		 * 
+		 * Method initializes the data structures used to hold the user preferences panel labels & controls' data
 		 */
 		public void initStructs() {
 			int cntr = 0;
 			int min, max, cur;
-			//UserPrefs.ControlGrid nakk = null; // = new UserPrefs.ControlGrid();
 			
 			if (debugging) {
 				System.out.println("Loading structs . . .");
 			}
-			//original (parallel) crap
-			for (int ouah = 0; ouah < optionText.length; ouah++) {
-				availableOptions.put(optionText[ouah], optionControl[ouah]);
-				if (debugging) {
-					System.out.println("Loaded " + optionText[ouah] + " . . .");
-				}
-			}
 			
-			//a better data structure
+			//a better data structure than the parallel array crap of before
 			for (String ouah : optionText) {
 				min = -1; max = -1; cur = -1;
 				

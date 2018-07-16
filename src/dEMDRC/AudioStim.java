@@ -43,7 +43,7 @@ public class AudioStim {
 				
 				/*
 				 * Haven't tested it conclusively, but I believe that these tones are playing on both channels every time there
-				 * is a bounce
+				 * is a bounce, instead of just in the appropriate side
 				 */
 				rightStereoToneBuffer[ouah] = (byte)(nakk & 0xFF);	//not sure if the channel side is correct here, going
 				leftStereoToneBuffer[ouah] = (byte)(nakk >> 8);		//off of a shitty text diagram in code example comments

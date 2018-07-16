@@ -34,11 +34,6 @@ public class HeadsUp extends Application {
 	public static AudioStim blonk = new AudioStim();	//not sure about this being static... audio issues?
 	public static UserPrefs userPrefsDisplay;
 	
-	//getters/setters
-	public GraphicsContext getGC() {
-		return gc;
-	}
-	
 	/**
 	 * I guess this would be the equivalent of our 'main()' while we're working with javafx
 	 * 
@@ -89,8 +84,7 @@ public class HeadsUp extends Application {
 		}
 		
 		//any init for other objects
-		UserPrefs.setWorldXY(world.getX(), world.getY());	//not working
-		
+		userPrefsDisplay.setWorldXY(world.getX(), world.getY());	//working?
 	}
 	
 	/**
@@ -152,8 +146,10 @@ public class HeadsUp extends Application {
 			toggle();
 		}
 		
-		//getter/setter (fucking ouah I hate the static dichotomy, need to review that shit in my books)
-		//for all of those invocations
+		/**
+		 * Method toggles the status of the running flag, starts or cancels the timer scheduling depending on what running state
+		 * we're going into, and toggles the text of the toggleActive button
+		 */
 		public void toggle() {
 			running = !running;
 			

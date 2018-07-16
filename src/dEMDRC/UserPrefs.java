@@ -18,8 +18,8 @@ public class UserPrefs implements EventHandler<ActionEvent> {
 	private Options opts = new Options();
 	public Options.UserSet uSet = opts.new UserSet();
 	
-	private static double worldX = -1;
-	private static double worldY = -1;
+	private double worldX = -1;
+	private double worldY = -1;
 
 	@Override
 	public void handle(ActionEvent arg0) {
@@ -43,7 +43,6 @@ public class UserPrefs implements EventHandler<ActionEvent> {
 			System.out.println("Options.controlStruct.size() = " + Options.controlStruct.size());
 			System.out.println("uSet.availableOptions.size() = " + uSet.availableOptions.size() + "\n");
 		}
-		
 		
 		for (ControlGrid prefCtrl : Options.controlStruct) {
 			if (Options.debugging) {
@@ -89,13 +88,12 @@ public class UserPrefs implements EventHandler<ActionEvent> {
 			userSetStage.setY(worldY + (Options.MaxY * 1.25));
 		}
 		userSetStage.show();
-		
 	}
 
 	//getters/setters
-	public static void setWorldXY(double x, double y) {
-		worldX = x;
-		worldY = y;
+	public void setWorldXY(double x, double y) {
+		this.worldX = x;
+		this.worldY = y;
 	}
 	
 	//general methods, detc

@@ -123,7 +123,6 @@ public class DisplayArray {
 		return gc;
 	}
 	
-	//general methods
 	/**
 	 * This method is probably more for testing than anything else, at this point; it simply
 	 * fills in the eye pixels of all that will fit on the display bar (demo?).  This may
@@ -140,7 +139,6 @@ public class DisplayArray {
 		
 		for (int ouahX = 1; (ouahX * 50) <= (Options.MaxX - 25); ouahX++) {
 			//NOTE: fillRect(X (left inc), Y (down inc), width, height)
-			//draw our 25x25 block and skip to m' lou _HAIGH_
 			gc.setFill(Color.RED);
 			gc.fillRect((ouahX * 50), 50, Options.BoxMaxX, Options.BoxMaxY);
 			
