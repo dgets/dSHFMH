@@ -15,8 +15,6 @@ import javafx.stage.Stage;
 
 public class UserPrefs implements EventHandler<ActionEvent> {
 	private Stage userSetStage = new Stage();
-	private Options opts = new Options();
-	public Options.UserSet uSet = opts.new UserSet();
 	
 	private double worldX = -1;
 	private double worldY = -1;
@@ -28,7 +26,7 @@ public class UserPrefs implements EventHandler<ActionEvent> {
 		Button abandonExit = new Button("Abandon & Exit");
 		
 		HeadsUp.blockInput();
-		uSet.initStructs();
+		//HeadsUp.uSet.initStructs();
 		
 		int cntr = 2;
 		
@@ -41,7 +39,7 @@ public class UserPrefs implements EventHandler<ActionEvent> {
 		if (Options.debugging) {
 			System.out.println("\nInitializing prefControls . . ");
 			System.out.println("Options.controlStruct.size() = " + Options.controlStruct.size());
-			System.out.println("uSet.availableOptions.size() = " + uSet.availableOptions.size() + "\n");
+			System.out.println("uSet.availableOptions.size() = " + HeadsUp.uSet.availableOptions.size() + "\n");
 		}
 		
 		for (ControlGrid prefCtrl : Options.controlStruct) {

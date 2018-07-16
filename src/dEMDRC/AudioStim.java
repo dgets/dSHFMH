@@ -75,7 +75,7 @@ public class AudioStim {
 		line.open(af, Options.ASampleRate);
 		line.start();
 		
-		if (!HeadsUp.userPrefsDisplay.uSet.MyStereoAudio) {  
+		if (!HeadsUp.uSet.MyStereoAudio) {  
 			line.write(monoToneBuffer, 0, bufferLength);
 		} else if (handed == Options.StereoSide.RIGHT) {
 			line.write(rightStereoToneBuffer, 0, (bufferLength * 2));

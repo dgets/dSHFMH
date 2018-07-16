@@ -3,7 +3,6 @@ package dEMDRC;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -70,6 +69,7 @@ public class Options {
 		//display options
 		//NOTE: we'll be putting window sizes in here at some point, but initially our defaults are good enough; this can
 		//be saved for a beta version
+		//NOTE: we're also changing this to use a HashMap now, because eff this
 		public int MyKittWidth, MyKittHeight;
 		//we can work with window positions at that point, too
 		public Color MyBgColor, MyFgColor;
@@ -80,6 +80,11 @@ public class Options {
 		//audio
 		public boolean MyBeepForAudio, MyStereoAudio;
 		public int MyAStimFreq, MyAStimDurInMS;
+		
+		//new structure for the customized settings
+		//obviously, with this rudimentary implementation, we're going to have to deal with conversion of Colors & booleans
+		//to and from integers.  why do I have the feeling that that won't make it through more than a week of code iterations?
+		public HashMap<String, Integer> customizedSettings = new HashMap<String, Integer>();
 		
 		//user settings location
 		private String settingsPath = new String(".dEMDRrc");
@@ -98,7 +103,7 @@ public class Options {
 				foundUserSettings = false;
 				
 				//set to defaults and run along
-				//NOTE: this really needs to be changed to a HashMap 8o|
+				//NOTE: this really needs to be changed to a HashMap 8o| (see initStructs())
 				MyKittWidth = MaxX; MyKittHeight = MaxY;
 				MyBgColor = bgColor; MyFgColor = fgColor;
 				MySessionDuration = SessionDurationInMin;	//used as the base for MyTotalIterations
@@ -109,7 +114,7 @@ public class Options {
 			} else {
 				//foundUserSettings = true;		//I'm really starting to think that we don't need this variable
 				try {
-					HeadsUp.userPrefsDisplay.uSet = readUserSet(uSettings);
+					HeadsUp.uSet = readUserSet(uSettings);
 				} catch (Exception ex) {
 					System.err.println("Issues reading/unpacking data from " + uSettings.getName() + " into " +
 									   "HeadsUp.userPrefsDisplay.uSet\nMsg: " + ex.getMessage());
@@ -130,6 +135,7 @@ public class Options {
 		 * 
 		 * @param uSetFile
 		 */
+		@SuppressWarnings("unused")
 		private UserSet readUserSet(File uSetFile) throws Exception {
 			Object tmpUserSet = null;
 			FileInputStream dataBarf = null;
@@ -169,7 +175,6 @@ public class Options {
 				System.out.println("Loading structs . . .");
 			}
 			
-			//a better data structure than the parallel array crap of before
 			for (String ouah : optionText) {
 				min = -1; max = -1; cur = -1;
 				
@@ -225,6 +230,22 @@ public class Options {
 				
 				controlStruct.add(HeadsUp.userPrefsDisplay.new ControlGrid(ouah, optionControl[cntr++], min, max, cur));
 			}
+			
+			//this is not the optimal way to do this 8o|
+			HeadsUp.uSet.customizedSettings.put("KittWidth", MaxX);
+			HeadsUp.uSet.customizedSettings.put("KittHeight", MaxY);
+			HeadsUp.uSet.customizedSettings.put("BgColor", bgColor.getIntArgbPre());	//bogus, almost
+			HeadsUp.uSet.customizedSettings.put("FgColor", fgColor.getIntArgbPre());	//certainly here
+			HeadsUp.uSet.customizedSettings.put("SessionDuration", SessionDurationInMin);
+			HeadsUp.uSet.customizedSettings.put("PauseInMS", DefaultPauseInMS);
+			HeadsUp.uSet.customizedSettings.put("BeepAudio", 0);
+			HeadsUp.uSet.customizedSettings.put("StereoAudio", 1);
+			HeadsUp.uSet.customizedSettings.put("AStimFrequency", AStimFreq);
+			HeadsUp.uSet.customizedSettings.put("AStimDuration", AStimDurInMS);
+			
+			if (testing) {
+				System.out.println(HeadsUp.uSet.toString());
+			}
 		}
 		
 		/**
@@ -235,7 +256,19 @@ public class Options {
 		 */
 		public String toString() {
 			//okay fuck this shit, we're switching to a HashMap for the customizable settings
-			return "Audio stim duration: " + MyAStimDurInMS + "\tAudio stim frequency: " + MyAStimFreq;
+			return "\nAudio Options\n-------------\n" + 
+				   "Audio stim duration: " + HeadsUp.uSet.customizedSettings.get("AStimDuration") + 
+				   "\t\tAudio stim frequency: " + HeadsUp.uSet.customizedSettings.get("AStimFrequency") +
+				   "\tBeep: " + HeadsUp.uSet.customizedSettings.get("BeepAudio") + "\n" +
+				   "Stereo audio: " + HeadsUp.uSet.customizedSettings.get("StereoAudio") +
+				   "\n\nSession Options\n---------------\n" +
+				   "Pause duration: " + HeadsUp.uSet.customizedSettings.get("PauseInMS") +
+				   "\tSession duration: " + HeadsUp.uSet.customizedSettings.get("SessionDuration") +
+				   "\n\nDisplay Options\n---------------\n" +
+				   "Kitt width: " + HeadsUp.uSet.customizedSettings.get("KittWidth") + "\tKitt height: " +
+				   HeadsUp.uSet.customizedSettings.get("KittHeight") + "\nBackground color: " +
+				   HeadsUp.uSet.customizedSettings.get("BgColor") + "\tForeground color: " +
+				   HeadsUp.uSet.customizedSettings.get("FgColor") + "\n-=-=-=-=-";
 		}
 	}
 }
