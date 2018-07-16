@@ -2,7 +2,16 @@ It really sucks having to use a text file for this stuff when I'm used to
 using GitHub & GitLab with their issues tracking features.  :(  I hope I can
 afford internet again soon.
 
+Remaining
+-=-=-=-=-
+16 Jul 18
 * reimplement OO structure for more sanity (or, barring that...)
+* learn & implement junit testing
+
+Completed or Void
+-=-=-=-=-=-=-=-=-
+16 Jul 18
+* [previously below reimplement OO structure for more sanity]
   * move UserPrefs to be a subclass of DisplayArray, or at least put them all
     into a superclass to keep shit together that is causing issues now with
     the fact that I can't instantiate UserPrefs.ControlGrid to access the
@@ -14,5 +23,4 @@ afford internet again soon.
     possible to stuff the array directly, though I'm not sure how (JSON-ish?)
 * do a code scrub; take out unused variables & cruft from implementations that
   have rendered previous shit irrelevant
-* learn & implement junit testing
 

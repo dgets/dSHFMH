@@ -172,7 +172,6 @@ public class HeadsUp extends Application {
 			DisplayArray.swoosh(gc);
 			
 			if (DisplayArray.moreRemaining()) {
-				//this.remaining--;
 				gmt.schedule(new BounceTask(), (Options.DefaultPauseInMS / DisplayArray.determineEyesInArray(Options.MaxX)));
 			} else {
 				//we need to change the controls (start/stop) status nao

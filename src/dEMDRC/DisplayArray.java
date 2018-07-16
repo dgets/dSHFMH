@@ -25,6 +25,8 @@ public class DisplayArray {
 	 */
 	public static int toggleDirection() {
 		direction *= -1;
+		remaining--;
+		
 		return direction;
 	}
 	
@@ -38,7 +40,7 @@ public class DisplayArray {
 			remaining = Options.TotalIterations;
 			return false;
 		} else {
-			remaining--;
+			//remaining--;
 			return true;
 		}
 	}
@@ -135,6 +137,7 @@ public class DisplayArray {
 			System.out.println("DBG: determineEyesInArray(" + Options.MaxX + ") = " + 
 				determineEyesInArray(Options.MaxX)); 
 		}
+		
 		for (int ouahX = 1; (ouahX * 50) <= (Options.MaxX - 25); ouahX++) {
 			//NOTE: fillRect(X (left inc), Y (down inc), width, height)
 			//draw our 25x25 block and skip to m' lou _HAIGH_
