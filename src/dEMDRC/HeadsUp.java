@@ -18,6 +18,8 @@ import javafx.event.EventHandler;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import dEMDRC.Options.UserSet;
+
 public class HeadsUp extends Application {
 	private Timer gmt;
 	
@@ -32,6 +34,9 @@ public class HeadsUp extends Application {
 	private static Region veil = new Region();
 	
 	public static AudioStim blonk = new AudioStim();	//not sure about this being static... audio issues?
+	private static Options nang = new Options();	//yes, this & next ARE used (in UserPrefs.handle())
+	//public Options.UserSet userSettings = nang.new UserSet(); 
+	public static UserPrefs userPrefsDisplay;
 	
 	//getters/setters
 	public GraphicsContext getGC() {
@@ -76,7 +81,8 @@ public class HeadsUp extends Application {
 		controls.show();
 		
 		toggleActive.setOnAction(new ToggleKitt());
-		goUserPrefs.setOnAction(new UserPrefs());
+		goUserPrefs.setOnAction(userPrefsDisplay = new UserPrefs());
+		//userSettings.initStructs();
 		
 		gmt = new Timer();
 		

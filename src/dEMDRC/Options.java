@@ -6,6 +6,7 @@ import java.util.HashMap;
 
 import com.sun.prism.paint.Color;
 
+import dEMDRC.UserPrefs.ControlGrid;
 import javafx.geometry.Rectangle2D;
 import javafx.stage.Screen;
 
@@ -57,13 +58,13 @@ public class Options {
 										   ControlType.SPECTRUM, ControlType.NUMERIC, ControlType.SLIDER,
 										   ControlType.TOGGLE, ControlType.TOGGLE, ControlType.NUMERIC,
 										   ControlType.NUMERIC };
-	
+	public static ArrayList<UserPrefs.ControlGrid> controlStruct = new ArrayList<UserPrefs.ControlGrid>();	
 	
 	//user modifiable values
 	public class UserSet {
 		//available options
 		public HashMap<String, ControlType> availableOptions = new HashMap<String, ControlType>();
-		public ArrayList<UserPrefs.ControlGrid> controlStruct = new ArrayList<UserPrefs.ControlGrid>();
+		
 		
 		//display options
 		//NOTE: we'll be putting window sizes in here at some point, but initially our defaults are good enough; this can
@@ -84,15 +85,16 @@ public class Options {
 		
 		//internal schitt
 		private boolean foundUserSettings;
-		private UserPrefs userPrefsTmp;
+		//private UserPrefs userPrefsTmp;
 		
 		//constructor(s)
-		public void UserSet() throws Exception {
+		public UserSet() {			
 			File uSettings = new File(settingsPath);
 			
 			if (uSettings.exists() && !uSettings.canRead()) {
 				foundUserSettings = false;
-				throw new Exception("Unable to read file: " + settingsPath);
+				//throw new Exception("Unable to read file: " + settingsPath);
+				System.err.println("uSettings exists, but cannot be read!");
 			} else if (!uSettings.exists()) {
 				foundUserSettings = false;
 				
@@ -117,71 +119,77 @@ public class Options {
 		 * Just some internal garbage here
 		 * 
 		 */
-		private void initStructs() {
+		public void initStructs() {
 			int cntr = 0;
-			UserPrefs.ControlGrid nakk = userPrefsTmp.new ControlGrid();
+			int min, max, cur;
+			//UserPrefs.ControlGrid nakk = null; // = new UserPrefs.ControlGrid();
 			
+			if (debugging) {
+				System.out.println("Loading structs . . .");
+			}
 			//original (parallel) crap
 			for (int ouah = 0; ouah < optionText.length; ouah++) {
 				availableOptions.put(optionText[ouah], optionControl[ouah]);
+				if (debugging) {
+					System.out.println("Loaded " + optionText[ouah] + " . . .");
+				}
 			}
 			
 			//a better data structure (I think?)
 			for (String ouah : optionText) {
-				nakk.setName(ouah);
-				nakk.setcType(optionControl[cntr]);
+				min = -1; max = -1; cur = -1;
 				
 				//setting individual control specifics
 				switch (ouah) {
 					case "Bar Width":
-						nakk.setMin(640);
-						nakk.setMax(MaxX);
-						nakk.setCurVal(MyKittWidth);
+						min = 640;
+						max = MaxX;
+						cur = MyKittWidth;
 						break;
 					case "Bar Height":
-						nakk.setMin(BoxMaxY * 3);
-						nakk.setMax(MaxY);
-						nakk.setCurVal(MyKittHeight);
+						min = (BoxMaxY * 3);
+						max = MaxY;
+						cur = MyKittHeight;
 						break;
 					case "Background Color":
-						nakk.setMin(Color.BLACK.getIntArgbPre());	//not sure about this...
-						nakk.setMax(Integer.MAX_VALUE);
-						nakk.setCurVal(MyBgColor.getIntArgbPre());	//again, :-?(beep)
+						min = Color.BLACK.getIntArgbPre();	//not sure about this...
+						max = Integer.MAX_VALUE;
+						cur = MyBgColor.getIntArgbPre();	//again, :-?(beep)
 						break;
 					case "Foreground Color":
-						nakk.setMin(Color.BLACK.getIntArgbPre());	//not sure about this...
-						nakk.setMax(Integer.MAX_VALUE);
-						nakk.setCurVal(MyFgColor.getIntArgbPre());	//again, :-?(beep)
+						min = Color.BLACK.getIntArgbPre();	//not sure about this...
+						max = Integer.MAX_VALUE;
+						cur = MyFgColor.getIntArgbPre();	//again, :-?(beep)
 						break;
 					case "Total Duration":
-						nakk.setMin(1);
-						nakk.setMax(12);	//arbitrary; will need to look up medical data for EMDR for this value to be proper
-						nakk.setCurVal(MySessionDuration);
+						min = 1;
+						max = 12;	//arbitrary; will need to look up medical data for EMDR for this value to be proper
+						cur = MySessionDuration;
 						break;
 					case "Display Speed":
-						nakk.setMin(MinimumPauseInMS);
-						nakk.setMax(MaximumPauseInMS);
-						nakk.setCurVal(MyPauseInMS);
+						min = MinimumPauseInMS;
+						max = MaximumPauseInMS;
+						cur = MyPauseInMS;
 						break;
 					case "Beep":
 					case "Stereo Audio":
-						nakk.setMin(0);
-						nakk.setMax(1);
-						nakk.setCurVal(0);
+						min = 0;
+						max = 1;
+						cur = 0;
 						break;
 					case "Tone Frequency":
-						nakk.setMin(MinAStimFreq);
-						nakk.setMax(MaxAStimFreq);
-						nakk.setCurVal(MyAStimFreq);
+						min = MinAStimFreq;
+						max = MaxAStimFreq;
+						cur = MyAStimFreq;
 						break;
 					case "Tone Duration":
-						nakk.setMin(MinAStimDur);
-						nakk.setMax(MaxAStimDur);
-						nakk.setCurVal(MyAStimDurInMS);
+						min = MinAStimDur;
+						max = MaxAStimDur;
+						cur = MyAStimDurInMS;
 						break;
 				}
 				
-				controlStruct.add(nakk);
+				controlStruct.add(HeadsUp.userPrefsDisplay.new ControlGrid(ouah, optionControl[cntr++], min, max, cur));
 			}
 		}
 	}
