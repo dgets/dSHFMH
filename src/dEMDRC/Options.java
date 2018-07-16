@@ -1,6 +1,9 @@
 package dEMDRC;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -90,7 +93,6 @@ public class Options {
 			
 			if (uSettings.exists() && !uSettings.canRead()) {
 				foundUserSettings = false;
-				//throw new Exception("Unable to read file: " + settingsPath);
 				System.err.println("uSettings exists, but cannot be read!");
 			} else if (!uSettings.exists()) {
 				foundUserSettings = false;
@@ -105,11 +107,55 @@ public class Options {
 				MyStereoAudio = StereoAudio;
 				MyAStimFreq = AStimFreq; MyAStimDurInMS = AStimDurInMS;
 			} else {
-				foundUserSettings = true;
+				//foundUserSettings = true;		//I'm really starting to think that we don't need this variable
+				try {
+					HeadsUp.userPrefsDisplay.uSet = readUserSet(uSettings);
+				} catch (Exception ex) {
+					System.err.println("Issues reading/unpacking data from " + uSettings.getName() + " into " +
+									   "HeadsUp.userPrefsDisplay.uSet\nMsg: " + ex.getMessage());
+				}
 			}
 			
 			//determine timing details
 			MyTotalIterations = (int)((MySessionDuration * 60 * 1000) / MyPauseInMS);
+		}
+		
+		//getters/setters
+		public boolean getFoundUserSettings() {	//really not sure if I'm gonna need this or not
+			return foundUserSettings;
+		}
+		
+		/**
+		 * Method will attempt to load the user's settings
+		 * 
+		 * @param uSetFile
+		 */
+		private UserSet readUserSet(File uSetFile) throws Exception {
+			Object tmpUserSet = null;
+			FileInputStream dataBarf = null;
+			
+			try {
+				dataBarf = new FileInputStream(uSetFile);
+			} catch (IOException ex) {
+				if (debugging || testing) {
+					System.err.println("* Error opening InputStream to " + uSetFile.getName() + "\nMsg: " + 
+									   ex.getMessage());
+				}
+			}
+			
+			//might want to do some error checking here based on the # of bytes .available() compared to the size of our
+			//UserSet object
+			
+			try {
+				dataBarf.read((byte[])tmpUserSet);
+			} catch (IOException ex) {
+				System.err.println("* Error reading from FileInputStream to " + uSetFile.getName() + "\nMsg: " +
+								   ex.getMessage());
+				throw new Exception("Error reading from " + uSetFile.getName());
+			}
+			
+			dataBarf.close();
+			return (UserSet)tmpUserSet;
 		}
 		
 		/**
@@ -179,6 +225,17 @@ public class Options {
 				
 				controlStruct.add(HeadsUp.userPrefsDisplay.new ControlGrid(ouah, optionControl[cntr++], min, max, cur));
 			}
+		}
+		
+		/**
+		 * Method implements the same toString() functionality that most objects have; should be useful for debugging, but
+		 * probably not a whole lot else
+		 * 
+		 * @return String
+		 */
+		public String toString() {
+			//okay fuck this shit, we're switching to a HashMap for the customizable settings
+			return "Audio stim duration: " + MyAStimDurInMS + "\tAudio stim frequency: " + MyAStimFreq;
 		}
 	}
 }
