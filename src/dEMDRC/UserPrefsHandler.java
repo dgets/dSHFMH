@@ -3,6 +3,8 @@ package dEMDRC;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 
 import dEMDRC.Options.ControlType;
 import javafx.event.ActionEvent;
@@ -175,6 +177,12 @@ public class UserPrefsHandler implements EventHandler<ActionEvent> {
 				guhUpDown();
 		}
 		
+		/**
+		 * Method serializes & saves HeadsUp.uSet.customizedSettings
+		 * 
+		 * @return
+		 * @throws Exception
+		 */
 		private Options.UserSet doSave() throws Exception {
 			File uSettings = new File(HeadsUp.uSet.settingsPath);
 			if (uSettings.exists()) {
@@ -190,16 +198,30 @@ public class UserPrefsHandler implements EventHandler<ActionEvent> {
 			}
 			
 			//waiting for testing feedback
-			//FileOutputStream gush = new FileOutputStream(uSettings);
+			FileOutputStream rawGush = new FileOutputStream(uSettings);
+			ObjectOutputStream gush = new ObjectOutputStream(rawGush);
 			
+			if (Options.debugging || Options.testing) {
+				System.out.println("\nuserSettingsGrid contents\n-=-=-=-\n");
+			}
 			for (int cntr = 2; cntr < userSettingsGrid.getChildren().size(); cntr++) {
 				if (Options.debugging || Options.testing) {
 					System.out.println(userSettingsGrid.getChildren().get(cntr).toString());
 				}
 			}
 			
-			//just so we can see our feedback to figger it out
-			return null;
+			//here's the magic
+			try {
+				gush.writeObject(HeadsUp.uSet.customizedSettings);
+			} catch (IOException ex) {
+				System.err.println("Unable to write to ObjectOutputStream!\nMsg: " + ex.getMessage());
+				throw new Exception("Unable to save settings configuration");
+			} finally {
+				gush.close();
+			}
+			
+			//um, is this really necessary?  I really haven't slept for quite awhile now...
+			return HeadsUp.uSet;
 		}
 	}
 	

@@ -3,6 +3,8 @@ package dEMDRC;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.ObjectStreamException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -62,7 +64,9 @@ public class Options {
 	public static ArrayList<UserPrefsHandler.ControlGrid> controlStruct = new ArrayList<UserPrefsHandler.ControlGrid>();	
 	
 	//user modifiable values
-	public class UserSet {
+	public class UserSet implements Serializable {
+		private static final long serialVersionUID = 4271985271438883908L;
+
 		//available options
 		public HashMap<String, ControlType> availableOptions = new HashMap<String, ControlType>();
 		
@@ -70,16 +74,6 @@ public class Options {
 		//NOTE: we'll be putting window sizes in here at some point, but initially our defaults are good enough; this can
 		//be saved for a beta version
 		//NOTE: we're also changing this to use a HashMap now, because eff this
-		/*public int MyKittWidth, MyKittHeight;
-		//we can work with window positions at that point, too
-		public Color MyBgColor, MyFgColor;
-		
-		//timings
-		public int MySessionDuration, MyPauseInMS, MyTotalIterations;
-		
-		//audio
-		public boolean MyBeepForAudio, MyStereoAudio;
-		public int MyAStimFreq, MyAStimDurInMS;*/
 		
 		//new structure for the customized settings
 		//obviously, with this rudimentary implementation, we're going to have to deal with conversion of Colors & booleans
@@ -99,18 +93,11 @@ public class Options {
 			if (uSettings.exists() && !uSettings.canRead()) {
 				foundUserSettings = false;
 				System.err.println("uSettings exists, but cannot be read!");
-			} else if (!uSettings.exists()) {
+			} else if (!uSettings.exists()) {	//no uSettings :'C
 				foundUserSettings = false;
 				
-				//set to defaults and run along
-				//NOTE: this really needs to be changed to a HashMap 8o| (see initStructs())
-				/*MyKittWidth = MaxX; MyKittHeight = MaxY;
-				MyBgColor = bgColor; MyFgColor = fgColor;
-				MySessionDuration = SessionDurationInMin;	//used as the base for MyTotalIterations
-				MyPauseInMS = DefaultPauseInMS;
-				MyBeepForAudio = BeepForAudio;
-				MyStereoAudio = StereoAudio;
-				MyAStimFreq = AStimFreq; MyAStimDurInMS = AStimDurInMS;*/
+				//set to defaults, or remain there, and run along
+				
 			} else {
 				//foundUserSettings = true;		//I'm really starting to think that we don't need this variable
 				try {
@@ -232,6 +219,8 @@ public class Options {
 			}
 			
 			//this is not the optimal way to do this 8o|
+			//also we should put this bit in a separate method, so that I don't have to go through the above loop & switch/case
+			//when I'm initializing everything due to a bogus serialization stream read attempt
 			HeadsUp.uSet.customizedSettings.put("KittWidth", MaxX);
 			HeadsUp.uSet.customizedSettings.put("KittHeight", MaxY);
 			HeadsUp.uSet.customizedSettings.put("BgColor", bgColor.getIntArgbPre());	//bogus, almost
@@ -246,6 +235,58 @@ public class Options {
 			if (testing) {
 				System.out.println(HeadsUp.uSet.toString());
 			}
+		}
+		
+		/**
+		 * Method is required for writing objects during serialization
+		 * 
+		 * @param java.io.ObjectOutputStream out
+		 * @throws IOException
+		 */
+		private void writeObject(java.io.ObjectOutputStream out) throws IOException {
+			//out.defaultWriteObject();	//think I'll just do this manually for now
+			try {
+				out.writeObject(HeadsUp.uSet.customizedSettings);
+			} catch (IOException ex) {
+				System.out.println("Err writing serialized settings!\nMsg: " + ex.getMessage());
+				throw ex;
+			} finally {
+				//maybe we should wipe the file if it wasn't written to disk properly?
+				out.close();
+			}
+		}
+		
+		/**
+		 * Method is required for reading objects from serialized storage
+		 * 
+		 * @param java.io.ObjectInputStream in
+		 * @throws IOException
+		 * @throws ClassNotFoundException
+		 */
+		@SuppressWarnings("unchecked")
+		private void readObject(java.io.ObjectInputStream in) throws IOException, ClassNotFoundException {
+			try {
+				HeadsUp.uSet.customizedSettings = (HashMap<String, Integer>)in.readObject();
+			} catch (IOException ex) {
+				System.out.println("Err reading/deserializing settings!\nMsg: " + ex.getMessage());
+				throw ex;
+			} catch (ClassNotFoundException ex) {
+				System.out.println("Err reading/deserializing settings!\nMsg: " + ex.getMessage());
+				throw ex;
+			} finally {
+				in.close();
+			}
+		}
+		
+		/**
+		 * So yeah I guess this one is for initializing HeadsUp.uSet.customizedSettings in case of an incomplete or tampered
+		 * with serialization stream
+		 * 
+		 * @throws ObjectStreamException
+		 */
+		@SuppressWarnings("unused")
+		private void readObjectNoData() throws ObjectStreamException {
+			HeadsUp.uSet.initStructs();
 		}
 		
 		/**
