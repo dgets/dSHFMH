@@ -3,15 +3,12 @@ package dEMDRC;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 import com.sun.prism.paint.Color;
 
@@ -157,10 +154,18 @@ public class Options {
 				//set to defaults, or remain there, and run along
 				
 			} else {
-				//foundUserSettings = true;		//I'm really starting to think that we don't need this variable
+				foundUserSettings = true;		//I'm really starting to think that we don't need this variable
 				try {
-					HeadsUp.uSet = readUserSet(uSettings);
+					if (debuggingFileIO()) {
+						System.out.println("In UserSet() constructor\nsettingsPath: " + settingsPath + 
+										   "\nuSettings general info: " + uSettings.toString() + 
+										   "uSettings.length() = " + uSettings.length() +
+										   "\t\tuSettings.canRead() = " + uSettings.canRead() +
+										   "\t\tuSettings.canWrite() = " + uSettings.canWrite() + "\n");
+					}	
+					HeadsUp.uSet.customizedSettings = readUserSet(uSettings);
 				} catch (Exception ex) {
+					//our hangup is coming in above 8o|
 					System.err.println("Issues reading/unpacking data from " + uSettings.getName() + " into " +
 									   "HeadsUp.userPrefsDisplay.uSet\nMsg: " + ex.getMessage());
 				}
@@ -178,33 +183,57 @@ public class Options {
 		 * @param uSetFile
 		 */
 		@SuppressWarnings("unused")
-		private UserSet readUserSet(File uSetFile) throws Exception {
-			Object tmpUserSet = null;
+		private HashMap<String, Integer> readUserSet(File uSetFile) throws Exception, NullPointerException {
+			Object tmpUserSettings = null;
 			FileInputStream dataBarf = null;
 			
 			try {
+				if (HeadsUp.opts.debuggingFileIO()) {
+					System.out.println("Attempting to instantiate & open FileInputStream 'dataBarf'\n" +
+									   "dataBarf target: " + uSetFile.getAbsolutePath() + "\n\n");
+				}
 				dataBarf = new FileInputStream(uSetFile);
 			} catch (IOException ex) {
-				if (HeadsUp.opts.debuggingGenTest()) {
+				if (HeadsUp.opts.debuggingFileIO()) {
 					System.err.println("* Error opening InputStream to " + uSetFile.getName() + "\nMsg: " + 
 									   ex.getMessage());
 				}
 				throw new Exception("Unable to open InputStream to uSetFile due to IO issues");
+			} catch (NullPointerException ex) {
+				System.err.println("* Null pointer working with instaniating 'dataBarf' in " +
+								   "Options.UserSet.readUserSet()\nMsg: " + ex.getMessage());
+				dataBarf.close();
+				throw new Exception("Unable to open InputStream to uSetFile due to null pointer issues");
 			}
 			
 			//might want to do some error checking here based on the # of bytes .available() compared to the size of our
 			//UserSet object
 			try {
-				dataBarf.read((byte[])tmpUserSet);
+				if (HeadsUp.opts.debuggingFileIO()) {
+					System.out.println("Attempting read from FIS 'dataBarf'\ntmpUserSet general details: " +
+									   tmpUserSettings.toString() + "\ndataBarf general details: " +
+									   dataBarf.toString() + "\ndataBarf bytes remaining: " + dataBarf.available());
+				}
+				dataBarf.read((byte[])tmpUserSettings);
 			} catch (IOException ex) {
 				System.err.println("* Error reading from FileInputStream to " + uSetFile.getName() + "\nMsg: " +
 								   ex.getMessage());
-				throw new Exception("Error reading from uSetFile");
+				throw new Exception("Error reading from uSetFile (IOException)");
+			} catch (NullPointerException ex) {
+				//here's where we've got the hangup right now
+				System.err.println("* Null pointer working with reading from 'dataBarf' in " +
+								   "Options.UserSet.readUserSet()\nMsg: " + ex.getMessage() + "\ndataBarf: " +
+								   dataBarf.toString() + "\ntmpUserSet: " + ((UserSet)tmpUserSettings).toString());
+				throw new Exception("Error reading from uSetFile (NullPointerException)");
 			} finally {
 				dataBarf.close();
 			}
 			
-			return (UserSet)tmpUserSet;
+			if (HeadsUp.opts.debuggingFileIO()) {
+				System.out.println("tmpUserSet has deserialized contents: " + ((UserSet)tmpUserSettings).toString());
+			}
+			
+			return (HashMap<String, Integer>)tmpUserSettings;
 		}
 		
 		/**
@@ -313,7 +342,7 @@ public class Options {
 			HeadsUp.uSet.customizedSettings.put("AStimDuration", AStimDurInMS);
 			
 			if (HeadsUp.opts.debuggingTest()) {
-				System.out.println(HeadsUp.uSet.toString());
+				System.out.println(HeadsUp.uSet.customizedSettings.toString());
 			}
 		}
 		
