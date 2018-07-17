@@ -33,7 +33,7 @@ public class HeadsUp extends Application {
 	private static GridPane dash = new GridPane();	//also this needs to be comfortably set below kitt
 	private static Region veil = new Region();
 	
-	private static Options opts = new Options();
+	public static Options opts = new Options();
 	public static Options.UserSet uSet = opts.new UserSet();
 	public static AudioStim blonk;	//not sure about this being static... audio issues?
 	public static UserPrefsHandler userPrefsDisplay;
@@ -44,7 +44,7 @@ public class HeadsUp extends Application {
 	 */
 	@Override
 	public void start(Stage world) throws Exception {
-		if (Options.testing) { 
+		if (opts.debuggingTest()) { 
 			gc = DisplayArray.swoosh(gc);
 			wutGroot.getChildren().add(ouahPad);
 		}
@@ -81,14 +81,14 @@ public class HeadsUp extends Application {
 		
 		gmt = new Timer();
 		
-		if (Options.debugging) {
+		if (opts.debuggingGen()) {
 			System.out.println("uSet.initStructs() is on deck.");
 		}
 		uSet.initStructs();
 		blonk = new AudioStim();
 		
 		//immediate timer activation (for testing)
-		if (Options.testing) { 
+		if (opts.debuggingTest()) { 
 			toggleActive.setText("Stop");
 			scheduleBounce();
 		}
@@ -143,7 +143,7 @@ public class HeadsUp extends Application {
 		
 		//need the constructor nao
 		public ToggleKitt() {
-			if (Options.testing) {
+			if (opts.debuggingTest()) {
 				running = true;
 			} else {
 				running = false;

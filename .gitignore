@@ -1,4 +1,5 @@
 *.class
 *.sw?
 .dEMDRrc
+/bin/
 

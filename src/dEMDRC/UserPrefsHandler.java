@@ -42,14 +42,14 @@ public class UserPrefsHandler implements EventHandler<ActionEvent> {
 		userSettingsGrid.add(new Label("Setting"), 0, 0);
 		userSettingsGrid.add(new Label("Value"), 1, 0);
 		
-		if (Options.debugging) {
+		if (HeadsUp.opts.debuggingGen()) {
 			System.out.println("\nInitializing prefControls . . ");
 			System.out.println("Options.controlStruct.size() = " + Options.controlStruct.size());
 			System.out.println("uSet.availableOptions.size() = " + HeadsUp.uSet.availableOptions.size() + "\n");
 		}
 		
 		for (ControlGrid prefCtrl : Options.controlStruct) {
-			if (Options.debugging) {
+			if (HeadsUp.opts.debuggingGen()) {
 				System.out.println("Adding prefCtrl: " + prefCtrl.getName());
 			}
 			
@@ -59,6 +59,9 @@ public class UserPrefsHandler implements EventHandler<ActionEvent> {
 					userSettingsGrid.add(new Slider(prefCtrl.getMin(), prefCtrl.getMax(), prefCtrl.getCurVal()), 1, cntr);
 					break;
 				case SPECTRUM:	//need to figure out how to turn an int into a Color?
+								//I really don't think that's gonna work, we're gonna need something else
+								//unfortunately that means a more complex struct, methinks... or perhaps we could use
+								//.min, .max, and .cur for the 3 integer values (RGB)...  ;)
 					userSettingsGrid.add(new Label("In Progress"), 1, cntr);
 					//userSettingsGrid.add(new ColorPicker(), 1, cntr);
 					break;
@@ -168,13 +171,12 @@ public class UserPrefsHandler implements EventHandler<ActionEvent> {
 
 		@Override
 		public void handle(ActionEvent arg0) {
-			//TODO implement moar than testing code
 			try {
 				doSave();
 			} catch (Exception ex) {
 				System.err.println(ex.getMessage());
 			}
-				guhUpDown();
+			guhUpDown();
 		}
 		
 		/**
@@ -201,11 +203,11 @@ public class UserPrefsHandler implements EventHandler<ActionEvent> {
 			FileOutputStream rawGush = new FileOutputStream(uSettings);
 			ObjectOutputStream gush = new ObjectOutputStream(rawGush);
 			
-			if (Options.debugging || Options.testing) {
+			if (HeadsUp.opts.debuggingGenTest()) {
 				System.out.println("\nuserSettingsGrid contents\n-=-=-=-\n");
 			}
 			for (int cntr = 2; cntr < userSettingsGrid.getChildren().size(); cntr++) {
-				if (Options.debugging || Options.testing) {
+				if (HeadsUp.opts.debuggingGenTest()) {
 					System.out.println(userSettingsGrid.getChildren().get(cntr).toString());
 				}
 			}

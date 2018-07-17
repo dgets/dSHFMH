@@ -11,6 +11,7 @@ import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 import com.sun.prism.paint.Color;
 
@@ -37,8 +38,7 @@ public class Options {
 	public static final int DefaultPauseInMS = 15;
 	public static final int MinimumPauseInMS = 10;
 	public static final int MaximumPauseInMS = 150;
-	public static final int TotalIterations = 500;	//testing purposes
-	//public static final int TotalIterations = (SessionDurationInMin * 60 * (1000 / PauseInMS));	//production
+	public int TotalIterations;
 	
 	//audio options
 	public static final boolean BeepForAudio = false;
@@ -52,8 +52,8 @@ public class Options {
 	private static final int MaxAStimDur = 250;
 	
 	//ouah
-	public static final boolean debugging = true;
-	public static final boolean testing = true;
+	public HashMap<String, Integer> debugging = new HashMap<String, Integer>();	//can't figure out declaration syntax :|
+																				//so I guess it'll go in a constructor
 	
 	//enums
 	public static enum StereoSide { LEFT, RIGHT };
@@ -66,6 +66,60 @@ public class Options {
 										   ControlType.TOGGLE, ControlType.TOGGLE, ControlType.NUMERIC,
 										   ControlType.NUMERIC };
 	public static ArrayList<UserPrefsHandler.ControlGrid> controlStruct = new ArrayList<UserPrefsHandler.ControlGrid>();	
+	
+	//constructor(s)
+	public Options() {
+		//this is basically just needed at this point because I can't figure out the Map.Entry K+V syntax in order to
+		//set the keys & values for the new 'debugging' HashMap above.  whatever, it's all good; can only figure out
+		//so much with no good physical books handy and no internet available
+		debugging.put("general", 1);
+		debugging.put("testing", 1);
+		debugging.put("fileio", 1);
+		
+		//yeah this is redundant.  fuggoff
+		if (debugging.get("testing") == 1) {
+			TotalIterations = 500;
+		} else {
+			TotalIterations = (HeadsUp.uSet.customizedSettings.get("Total Duration") * 60 * 
+								(1000 / HeadsUp.uSet.customizedSettings.get("Display Speed")));
+		}
+	}
+	
+	/**
+	 * Method tells us if we're doing general debugging
+	 * 
+	 * @return
+	 */
+	public boolean debuggingGen() {
+		return (debugging.get("general") == 1);
+	}
+	
+	/**
+	 * Method informs us if we're doing general _or_ testing debugging
+	 * 
+	 * @return
+	 */
+	public boolean debuggingGenTest() {
+		return ((debugging.get("general") == 1) || (debugging.get("testing") == 1));
+	}
+	
+	/**
+	 * Method just informs about testing debugging
+	 * 
+	 * @return
+	 */
+	public boolean debuggingTest() {
+		return (debugging.get("testing") == 1);
+	}
+	
+	/**
+	 * Method that lets us know if we're doing fileIO debugging
+	 * 
+	 * @return
+	 */
+	public boolean debuggingFileIO() {
+		return (debugging.get("fileio") == 1);
+	}
 	
 	//user modifiable values
 	public class UserSet implements Serializable {
@@ -111,9 +165,6 @@ public class Options {
 									   "HeadsUp.userPrefsDisplay.uSet\nMsg: " + ex.getMessage());
 				}
 			}
-			
-			//determine timing details
-			//MyTotalIterations = (int)((MySessionDuration * 60 * 1000) / MyPauseInMS);
 		}
 		
 		//getters/setters
@@ -134,7 +185,7 @@ public class Options {
 			try {
 				dataBarf = new FileInputStream(uSetFile);
 			} catch (IOException ex) {
-				if (debugging || testing) {
+				if (HeadsUp.opts.debuggingGenTest()) {
 					System.err.println("* Error opening InputStream to " + uSetFile.getName() + "\nMsg: " + 
 									   ex.getMessage());
 				}
@@ -163,7 +214,7 @@ public class Options {
 			int cntr = 0;
 			int min, max, cur;
 			
-			if (debugging) {
+			if (HeadsUp.opts.debuggingGen()) {
 				System.out.println("Loading structs . . .");
 			}
 			
@@ -261,7 +312,7 @@ public class Options {
 			HeadsUp.uSet.customizedSettings.put("AStimFrequency", AStimFreq);
 			HeadsUp.uSet.customizedSettings.put("AStimDuration", AStimDurInMS);
 			
-			if (testing) {
+			if (HeadsUp.opts.debuggingTest()) {
 				System.out.println(HeadsUp.uSet.toString());
 			}
 		}

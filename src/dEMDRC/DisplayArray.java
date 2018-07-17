@@ -9,7 +9,7 @@ public class DisplayArray {
 	//our shite
 	private static int direction = 1;
 	private static int location = 1;	//1 - (determineEyesInArray(xSize) - 1)
-	private static int remaining = Options.TotalIterations;
+	private static int remaining = HeadsUp.opts.TotalIterations;
 	
 	//getters/setters (retentive for this, to be sure)
 	public int getDirection() {
@@ -39,7 +39,7 @@ public class DisplayArray {
 	 */
 	public static boolean moreRemaining() {
 		if (remaining < 1) {
-			remaining = Options.TotalIterations;
+			remaining = HeadsUp.opts.TotalIterations;
 			return false;
 		} else {
 			//remaining--;
@@ -134,7 +134,7 @@ public class DisplayArray {
 	 * @return
 	 */
 	public static GraphicsContext initDisplay(GraphicsContext gc) {
-		if (Options.debugging) {
+		if (HeadsUp.opts.debuggingGen()) {
 			System.out.println("DBG: determineEyesInArray(" + Options.MaxX + ") = " + 
 				determineEyesInArray(Options.MaxX)); 
 		}
@@ -144,7 +144,7 @@ public class DisplayArray {
 			gc.setFill(Color.RED);
 			gc.fillRect((ouahX * 50), 50, Options.BoxMaxX, Options.BoxMaxY);
 			
-			if (Options.debugging) {
+			if (HeadsUp.opts.debuggingGen()) {
 				System.out.println("ouahX: " + ouahX);
 			}
 		}

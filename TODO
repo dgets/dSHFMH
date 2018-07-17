@@ -10,6 +10,12 @@ Remaining
 * set the display to pause when the user preferences window comes up
 * start utilizing task manager in eclipse until net access is back
 
+17 Jul 18
+* switch to utilizing 3 integers (min, max, & cur) in the saved data for the
+  default Color objects as one each of RGB; this will save us from having to
+  complicate the data structure further right now, though that's what I'm sure
+  we'll end up having to do for best maintainability purposes
+
 Completed or Void
 -=-=-=-=-=-=-=-=-
 16 Jul 18
