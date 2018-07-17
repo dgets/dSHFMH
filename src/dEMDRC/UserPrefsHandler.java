@@ -48,8 +48,8 @@ public class UserPrefsHandler implements EventHandler<ActionEvent> {
 		}
 		
 		for (ControlGrid prefCtrl : Options.controlStruct) {
-			if (HeadsUp.opts.debuggingGen()) {
-				System.out.println("Adding prefCtrl: " + prefCtrl.getName());
+			if (HeadsUp.opts.debuggingGenTest()) {
+				System.out.print("Adding prefCtrl: " + prefCtrl.getName());
 			}
 			
 			userSettingsGrid.add(new Label(prefCtrl.getName()), 0, cntr);
@@ -74,6 +74,13 @@ public class UserPrefsHandler implements EventHandler<ActionEvent> {
 				default:
 					userSettingsGrid.add(new Label("Houston, we've had a problem"), 1, cntr);
 			}
+			
+			if (HeadsUp.opts.debuggingTest()) {
+				System.out.println(" is type " + prefCtrl.getCType().toString() + "\nAdding that type to Node's " +
+								   "userData field for easier data retrieval/population");
+			}
+			userSettingsGrid.getChildren().get(cntr).setUserData(prefCtrl.getCType());
+			
 			cntr++;
 		}
 		
@@ -162,6 +169,16 @@ public class UserPrefsHandler implements EventHandler<ActionEvent> {
 			setMin(minValue);
 			setMax(maxValue);
 			setCurVal(curValue);
+			
+			if ((controlType == Options.ControlType.NUMERIC) || (controlType == Options.ControlType.SLIDER) ||
+				(controlType == Options.ControlType.SPECTRUM) || (controlType == Options.ControlType.TOGGLE)) {
+				
+			}
+		}
+		
+		//general methods
+		private void setUserData(Options.ControlType thisCtrlType) {
+			
 		}
 	}
 	
@@ -171,6 +188,10 @@ public class UserPrefsHandler implements EventHandler<ActionEvent> {
 		@Override
 		public void handle(ActionEvent arg0) {
 			try {
+				//first we need to set up everything in HeadsUp.uSet, etc
+				
+				
+				//now we can save it
 				doSave();
 			} catch (Exception ex) {
 				System.err.println(ex.getMessage());
@@ -185,6 +206,9 @@ public class UserPrefsHandler implements EventHandler<ActionEvent> {
 		 * @throws Exception
 		 */
 		private Options.UserSet doSave() throws Exception {
+			//first we need to populate the settings, derp
+			populateSettings();
+			
 			File uSettings = new File(HeadsUp.uSet.settingsPath);
 			if (uSettings.exists()) {
 				//wipe the old
@@ -222,7 +246,28 @@ public class UserPrefsHandler implements EventHandler<ActionEvent> {
 			}
 			
 			//um, is this really necessary?  I really haven't slept for quite awhile now...
-			return HeadsUp.uSet;
+			return HeadsUp.uSet;	//pretty friggin' sure that's not necessary
+		}
+		
+		/**
+		 * Method populates user settings with data from the UserPrefs form
+		 * 
+		 */
+		private void populateSettings() {
+			//.getAccessibleText() is probably our friend here
+			Options.ControlType tmpControlType = null;
+			
+			if (HeadsUp.opts.debuggingTest()) {
+				System.out.println("\nUserPrefsDisplay.populateSettings\n-=-=-=-=-");
+			}
+			for (int cntr = 0; cntr < HeadsUp.userPrefsDisplay.userSettingsGrid.getChildren().size(); cntr++) {
+				tmpControlType = HeadsUp.uSet.
+				if (HeadsUp.opts.debuggingTest()) {
+					System.out.println(cntr + ": " + 
+									   HeadsUp.userPrefsDisplay.userSettingsGrid.getChildren().get(cntr));
+					
+				}
+			}
 		}
 	}
 	

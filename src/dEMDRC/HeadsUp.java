@@ -18,8 +18,6 @@ import javafx.event.EventHandler;
 import java.util.Timer;
 import java.util.TimerTask;
 
-//import dEMDRC.Options.UserSet;
-
 public class HeadsUp extends Application {
 	private Timer gmt;
 	
