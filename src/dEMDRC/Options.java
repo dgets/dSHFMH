@@ -2,7 +2,11 @@ package dEMDRC;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -134,20 +138,21 @@ public class Options {
 					System.err.println("* Error opening InputStream to " + uSetFile.getName() + "\nMsg: " + 
 									   ex.getMessage());
 				}
+				throw new Exception("Unable to open InputStream to uSetFile due to IO issues");
 			}
 			
 			//might want to do some error checking here based on the # of bytes .available() compared to the size of our
 			//UserSet object
-			
 			try {
 				dataBarf.read((byte[])tmpUserSet);
 			} catch (IOException ex) {
 				System.err.println("* Error reading from FileInputStream to " + uSetFile.getName() + "\nMsg: " +
 								   ex.getMessage());
-				throw new Exception("Error reading from " + uSetFile.getName());
+				throw new Exception("Error reading from uSetFile");
+			} finally {
+				dataBarf.close();
 			}
 			
-			dataBarf.close();
 			return (UserSet)tmpUserSet;
 		}
 		
@@ -217,6 +222,30 @@ public class Options {
 				
 				controlStruct.add(HeadsUp.userPrefsDisplay.new ControlGrid(ouah, optionControl[cntr++], min, max, cur));
 			}
+			
+			File uSettings = new File(HeadsUp.uSet.settingsPath);
+			FileInputStream rawGush;
+			ObjectInputStream gush = null;
+			if (uSettings.exists() && uSettings.canRead()) {
+				try {
+					rawGush = new FileInputStream(uSettings);
+					gush = new ObjectInputStream(rawGush);
+				} catch (FileNotFoundException ex) {
+					System.err.println("So yeah, a case I just ruled out by algorithmic testing somehow just happened.\n" +
+									   "Msg: " + ex.getMessage());
+				} catch (IOException ex) {
+					System.err.println("IO issues while trying to open streams to read defaults!\nMsg: " + ex.getMessage());
+				}
+				
+				try {
+					HeadsUp.uSet.readObject(gush);
+				} catch (ClassNotFoundException ex) {
+					System.err.println("Class not found exception!\nMsg: " + ex.getMessage());
+				} catch (IOException ex) {
+					System.err.println("IO issues while trying to load defaults!\nMsg: " + ex.getMessage());
+				}
+			}
+			
 			
 			//this is not the optimal way to do this 8o|
 			//also we should put this bit in a separate method, so that I don't have to go through the above loop & switch/case
