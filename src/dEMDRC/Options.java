@@ -54,7 +54,7 @@ public class Options {
 	
 	//enums
 	public static enum StereoSide { LEFT, RIGHT };
-	public static enum ControlType { SLIDER, SPECTRUM, NUMERIC, TOGGLE };
+	public static enum ControlType { SLIDER, SPECTRUM, NUMERIC, TOGGLE, TEXT };
 	
 	public String[] optionText = { "Bar Width", "Bar Height", "Background Color", "Foreground Color", "Total Duration",
 		    					   "Display Speed", "Beep", "Stereo Audio", "Tone Frequency", "Tone Duration" };

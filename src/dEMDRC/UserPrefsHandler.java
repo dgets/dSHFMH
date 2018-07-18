@@ -258,57 +258,87 @@ public class UserPrefsHandler implements EventHandler<ActionEvent> {
 		 * Method populates user settings with data from the UserPrefs form
 		 * 
 		 */
-		private void populateSettings() {
-			//.getAccessibleText() is probably our friend here
+		private void populateSettings() throws Exception {
 			Options.ControlType tmpControlType = null;
 			AccessibleRole ctrlRole = null;
-			String tmpBlurb = null;
+			String tmpBlurb = null, tmpName = null;
 			Node tmpNode = null;
 			
 			if (HeadsUp.opts.debuggingTest()) {
 				System.out.println("\nUserPrefsDisplay.populateSettings\n-=-=-=-=-");
 			}
 			
-			//for (int cntr = 3; cntr <= (HeadsUp.userPrefsDisplay.userSettingsGrid.getChildren().size() - 3); cntr += 2) {
-			//neither one of those guesses on the proper indexing of that GridPane() were anywhere close to accurate; I'll
-			//have to figure out the logic behind the shit that I'm implementing now at some point to make it more dynamic,
-			//but I've got enough to improve it for now, at least
-			
-			for (int cntr = 0; cntr < HeadsUp.userPrefsDisplay.userSettingsGrid.getChildren().size(); cntr++) {
-			//for (int cntr = 0; cntr <= 11; cntr++) {	//there are actually 11 entries, but the last 2 are the save/abandon buttons
-				//tmpControlType = HeadsUp.uSet.availableOptions.get(
-				//		HeadsUp.userPrefsDisplay.userSettingsGrid.getChildren().get(cntr).getUserData());
-				
+			for (int cntr = 3; cntr < HeadsUp.userPrefsDisplay.userSettingsGrid.getChildren().size(); cntr++) {
 				ctrlRole = HeadsUp.userPrefsDisplay.userSettingsGrid.getChildren().get(cntr).getAccessibleRole();
-				if (HeadsUp.opts.debuggingTest()) {
-					System.out.print(cntr + " role: " + ctrlRole);				
-				}
-				
-				/*Label ctrlText = (Label)HeadsUp.userPrefsDisplay.userSettingsGrid.getChildren().get(cntr - 1);
-				tmpControlType = HeadsUp.uSet.availableOptions.get(ctrlText.getText());
-				
-				if (HeadsUp.opts.debuggingGenTest()) {
-					System.out.println("Text for #" + cntr + ": " + tmpControlType);
-				}
-				
-				switch (tmpControlType) {
-				case Options.ControlType.:
-					
-					
+				/*if (HeadsUp.opts.debuggingTest()) {
+					System.out.println(cntr + " role: " + ctrlRole);				
 				}*/
 				
 				tmpNode = HeadsUp.userPrefsDisplay.userSettingsGrid.getChildren().get(cntr);
 				switch (ctrlRole) {
 					case TEXT:
 						tmpBlurb = ((Label)tmpNode).getText();
+						tmpName = tmpBlurb;
+						tmpControlType = Options.ControlType.TEXT;
 						break;
 					case SLIDER:
 						tmpBlurb = Integer.toString((int)((Slider)tmpNode).getValue());
+						tmpControlType = Options.ControlType.SLIDER;
 						break;
 					case TEXT_FIELD:
 						tmpBlurb = ((TextField)tmpNode).getText();
+						tmpControlType = Options.ControlType.TEXT;
 						break;
+					case CHECK_BOX:
+						if (((CheckBox)tmpNode).isSelected()) {
+							tmpBlurb = "1";
+						} else {
+							tmpBlurb = "0";
+						}
+						tmpControlType = Options.ControlType.TOGGLE;
+						break;
+					case BUTTON:
+						if (HeadsUp.opts.debuggingGenTest()) {
+							System.out.println("Skipping entry for a [non-setting] Node (in this case a Button class)");
+						}
 						
+						cntr++;
+						continue;	//actually unless we change more on the form, buttons mean it's not a setting, it's form end
+					default:
+						tmpBlurb = "Shit's just all fucked";
+				}
+				
+				if (HeadsUp.opts.debuggingGenTest()) {
+					System.out.println("Role allows us to grab: " + tmpBlurb);
+				}
+				
+				if ((cntr % 2) == 0) {
+					switch (tmpControlType) {
+						case TEXT:
+							//invalid, continue
+							continue;
+						case SLIDER:
+							HeadsUp.uSet.customizedSettings.put(tmpName, (int)Double.parseDouble(tmpBlurb));
+							break;
+						case NUMERIC:	//this is actually a TEXT_FIELD
+							HeadsUp.uSet.customizedSettings.put(tmpName, Integer.parseInt(tmpBlurb));
+							break;
+						case TOGGLE:	//actually a CHECKBOX
+							if ((Integer.parseInt(tmpBlurb) < 0) || (Integer.parseInt(tmpBlurb) > 1)) {
+								System.err.println("* Weird error trying to determine a checkbox/toggle value");
+								throw new Exception("Error parsing toggle value");
+							} else if (Integer.parseInt(tmpBlurb) == 0) {
+								HeadsUp.uSet.customizedSettings.put(tmpName, 0);
+							} else {
+								HeadsUp.uSet.customizedSettings.put(tmpName, 1);
+							}
+						case SPECTRUM:	//UNIMPLEMENTED CURRENTLY
+							break;
+					}
+					
+					if (HeadsUp.opts.debuggingTest()) {
+						System.out.println("Changed setting: " + tmpName + " to value: " + tmpBlurb);
+					}
 				}
 			}
 		}
