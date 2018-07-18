@@ -4,10 +4,13 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.util.HashMap;
 
 import dEMDRC.Options.ControlType;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.AccessibleRole;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
@@ -154,6 +157,8 @@ public class UserPrefsHandler implements EventHandler<ActionEvent> {
 			this.max = max;
 		}
 		
+		//omfg do not tell me I just recoded that much duplication from how much sleep I've missed & forgetting about this
+		//set of accessors from the class m(  I'm signing off; time for nini
 		public int getCurVal() {
 			return curVal;
 		}
@@ -177,9 +182,9 @@ public class UserPrefsHandler implements EventHandler<ActionEvent> {
 		}
 		
 		//general methods
-		private void setUserData(Options.ControlType thisCtrlType) {
+		/*private void setUserData(Options.ControlType thisCtrlType) {
 			
-		}
+		}*/
 	}
 	
 	//event handlers
@@ -256,19 +261,82 @@ public class UserPrefsHandler implements EventHandler<ActionEvent> {
 		private void populateSettings() {
 			//.getAccessibleText() is probably our friend here
 			Options.ControlType tmpControlType = null;
+			AccessibleRole ctrlRole = null;
+			String tmpBlurb = null;
+			Node tmpNode = null;
 			
 			if (HeadsUp.opts.debuggingTest()) {
 				System.out.println("\nUserPrefsDisplay.populateSettings\n-=-=-=-=-");
 			}
+			
+			//for (int cntr = 3; cntr <= (HeadsUp.userPrefsDisplay.userSettingsGrid.getChildren().size() - 3); cntr += 2) {
+			//neither one of those guesses on the proper indexing of that GridPane() were anywhere close to accurate; I'll
+			//have to figure out the logic behind the shit that I'm implementing now at some point to make it more dynamic,
+			//but I've got enough to improve it for now, at least
+			
 			for (int cntr = 0; cntr < HeadsUp.userPrefsDisplay.userSettingsGrid.getChildren().size(); cntr++) {
-				tmpControlType = HeadsUp.uSet.
+			//for (int cntr = 0; cntr <= 11; cntr++) {	//there are actually 11 entries, but the last 2 are the save/abandon buttons
+				//tmpControlType = HeadsUp.uSet.availableOptions.get(
+				//		HeadsUp.userPrefsDisplay.userSettingsGrid.getChildren().get(cntr).getUserData());
+				
+				ctrlRole = HeadsUp.userPrefsDisplay.userSettingsGrid.getChildren().get(cntr).getAccessibleRole();
 				if (HeadsUp.opts.debuggingTest()) {
-					System.out.println(cntr + ": " + 
-									   HeadsUp.userPrefsDisplay.userSettingsGrid.getChildren().get(cntr));
+					System.out.print(cntr + " role: " + ctrlRole);				
+				}
+				
+				/*Label ctrlText = (Label)HeadsUp.userPrefsDisplay.userSettingsGrid.getChildren().get(cntr - 1);
+				tmpControlType = HeadsUp.uSet.availableOptions.get(ctrlText.getText());
+				
+				if (HeadsUp.opts.debuggingGenTest()) {
+					System.out.println("Text for #" + cntr + ": " + tmpControlType);
+				}
+				
+				switch (tmpControlType) {
+				case Options.ControlType.:
 					
+					
+				}*/
+				
+				tmpNode = HeadsUp.userPrefsDisplay.userSettingsGrid.getChildren().get(cntr);
+				switch (ctrlRole) {
+					case TEXT:
+						tmpBlurb = ((Label)tmpNode).getText();
+						break;
+					case SLIDER:
+						tmpBlurb = Integer.toString((int)((Slider)tmpNode).getValue());
+						break;
+					case TEXT_FIELD:
+						tmpBlurb = ((TextField)tmpNode).getText();
+						break;
+						
 				}
 			}
 		}
+		
+		/**
+		 * Method will step through userSettingsGrid's kiddos, putting together a HashMap of the relevant shit for populateSettings()
+		 * 
+		 * I shamelessly stole this code from StackOverflow; can't say I like the algorithm much, though
+		 * 
+		 * @return HashMap<String, Integer>
+		 */
+		//@SuppressWarnings("deprecation")
+		/*private HashMap<String, Integer> pullFromGrid() {
+			HashMap<String, Integer> formData = new HashMap<String, Integer>();
+			Object tmpClass = null;
+					
+			for (int x = 0; x < HeadsUp.userPrefsDisplay.userSettingsGrid.impl_getColumnCount(); x++) {
+				for (int y = 0; y < HeadsUp.userPrefsDisplay.userSettingsGrid.impl_getRowCount(); y++) {
+					for (Node ouah : HeadsUp.userPrefsDisplay.userSettingsGrid.getChildren()) {
+						if ((GridPane.getColumnIndex(ouah) == x) && (GridPane.getRowIndex(ouah) == y)) {
+							int curX, curY;
+							
+							//if Class. ouah.;	//I don't think this is what I wanted it to be
+						}
+					}
+				}
+			}
+		}*/
 	}
 	
 	private class AbandonNExit implements EventHandler<ActionEvent> {
