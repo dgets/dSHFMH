@@ -72,6 +72,7 @@ public class Options {
 		debugging.put("general", 1);
 		debugging.put("testing", 1);
 		debugging.put("fileio", 1);
+		debugging.put("display", 1);
 		
 		//yeah this is redundant.  fuggoff
 		if (debugging.get("testing") == 1) {
@@ -107,6 +108,10 @@ public class Options {
 	 */
 	public boolean debuggingTest() {
 		return (debugging.get("testing") == 1);
+	}
+	
+	public boolean debuggingDisplay() {
+		return (debugging.get("display") == 1);
 	}
 	
 	/**

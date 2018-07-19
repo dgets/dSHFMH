@@ -19,7 +19,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class HeadsUp extends Application {
-	private Timer gmt;
+	public static Timer gmt;
 	
 	private Group wutGroot = new Group();
 	private Scene kR = new Scene(wutGroot, Options.MaxX, Options.MaxY, Color.BLACK);
@@ -95,6 +95,22 @@ public class HeadsUp extends Application {
 		userPrefsDisplay.setWorldXY(world.getX(), world.getY());	//working?
 	}
 	
+	public static void togglePause() {
+		if (DisplayArray.paused) {
+			HeadsUp.gmt.notify();
+		} else {
+			try {
+				HeadsUp.gmt.wait();
+			} catch (InterruptedException ex) {
+				System.err.println("Issue asking gmt scheduler to wait!\nMsg: " + ex.getMessage());
+			} catch (Exception ex) {
+				System.err.println("Unknown error asking gmt scheduler to wait!\nMsg: " + ex.getMessage());
+			}
+		}
+		
+		DisplayArray.paused = !DisplayArray.paused;
+	}
+	
 	/**
 	 * Method is just a wrapper to return adjustSpeed's value without exposing the whole widget
 	 * 
@@ -131,7 +147,7 @@ public class HeadsUp extends Application {
 	/**
 	 * Just a wrapper for scheduling a new bounce task so that we're not duplicating so much code
 	 */
-	private void scheduleBounce() {
+	public void scheduleBounce() {
 		gmt.schedule(new BounceTask(), (Options.DefaultPauseInMS / DisplayArray.determineEyesInArray(Options.MaxX)));
 	}
 
@@ -171,7 +187,7 @@ public class HeadsUp extends Application {
 		}
 	}
 	
-	private class BounceTask extends TimerTask {
+	public class BounceTask extends TimerTask {
 		public void run() {
 			DisplayArray.swoosh(gc);
 			

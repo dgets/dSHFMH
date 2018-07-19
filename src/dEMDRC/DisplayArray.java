@@ -10,6 +10,7 @@ public class DisplayArray {
 	private static int direction = 1;
 	private static int location = 1;	//1 - (determineEyesInArray(xSize) - 1)
 	private static int remaining = HeadsUp.opts.TotalIterations;
+	public static boolean paused = false;
 	
 	//getters/setters (retentive for this, to be sure)
 	public int getDirection() {
@@ -29,6 +30,10 @@ public class DisplayArray {
 		direction *= -1;
 		remaining--;
 		
+		if (HeadsUp.opts.debuggingDisplay()) {
+			System.out.println("Display iterations remaining: " + remaining);
+		}
+		
 		return direction;
 	}
 	
@@ -39,10 +44,12 @@ public class DisplayArray {
 	 */
 	public static boolean moreRemaining() {
 		if (remaining < 1) {
+			if (HeadsUp.opts.debuggingDisplay()) {
+				System.out.println("Display iterations complete");
+			}
 			remaining = HeadsUp.opts.TotalIterations;
 			return false;
 		} else {
-			//remaining--;
 			return true;
 		}
 	}

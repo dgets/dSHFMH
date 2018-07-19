@@ -38,6 +38,8 @@ public class UserPrefsHandler implements EventHandler<ActionEvent> {
 		lblSetting.setStyle("-fx-font-weight: bold;");
 		lblValue.setStyle("-fx-font-weight: bold;");
 		
+		//these should be bundled; durrrr
+		HeadsUp.togglePause();
 		HeadsUp.blockInput();
 		
 		int cntr = 2;
@@ -206,6 +208,7 @@ public class UserPrefsHandler implements EventHandler<ActionEvent> {
 			} catch (Exception ex) {
 				System.err.println(ex.getMessage());
 			}
+			HeadsUp.togglePause();
 			guhUpDown();
 		}
 		
@@ -380,6 +383,7 @@ public class UserPrefsHandler implements EventHandler<ActionEvent> {
 		public void handle(ActionEvent arg0) {
 			//TODO moar than testing code, detc
 			//erm, actually this may be all that we need for the 'AbandonNExit' button handler
+			HeadsUp.togglePause();
 			guhUpDown();
 		}
 		
