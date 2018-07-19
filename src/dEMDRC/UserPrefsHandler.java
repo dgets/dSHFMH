@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
-import java.util.HashMap;
 
 import dEMDRC.Options.ControlType;
 import javafx.event.ActionEvent;
@@ -32,6 +31,12 @@ public class UserPrefsHandler implements EventHandler<ActionEvent> {
 	public void handle(ActionEvent arg0) {
 		Button saveExit = new Button("Save & Exit");
 		Button abandonExit = new Button("Abandon & Exit");
+		Label lblSetting = new Label("Setting");
+		Label lblValue = new Label("Value");
+		saveExit.setStyle("-fx-font-weight: bold;");
+		abandonExit.setStyle("-fx-font-weight: bold;");
+		lblSetting.setStyle("-fx-font-weight: bold;");
+		lblValue.setStyle("-fx-font-weight: bold;");
 		
 		HeadsUp.blockInput();
 		
@@ -41,8 +46,8 @@ public class UserPrefsHandler implements EventHandler<ActionEvent> {
 		
 		//setting description column
 		//NOTE: these need to stand out a little bit; find out how to mess with the font & attributes
-		userSettingsGrid.add(new Label("Setting"), 0, 0);
-		userSettingsGrid.add(new Label("Value"), 1, 0);
+		userSettingsGrid.add(lblSetting, 0, 0);
+		userSettingsGrid.add(lblValue, 1, 0);
 		
 		if (HeadsUp.opts.debuggingGen()) {
 			System.out.println("\nInitializing prefControls . . ");

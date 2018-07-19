@@ -182,7 +182,7 @@ public class Options {
 		 * 
 		 * @param uSetFile
 		 */
-		@SuppressWarnings("unused")
+		@SuppressWarnings({ "null", "unchecked" })
 		private HashMap<String, Integer> readUserSet(File uSetFile) throws Exception, NullPointerException {
 			Object tmpUserSettings = null;
 			FileInputStream dataBarf = null;
