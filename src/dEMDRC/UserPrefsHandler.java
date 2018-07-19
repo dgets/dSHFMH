@@ -67,7 +67,7 @@ public class UserPrefsHandler implements EventHandler<ActionEvent> {
 				case SLIDER:
 					userSettingsGrid.add(new Slider(prefCtrl.getMin(), prefCtrl.getMax(), prefCtrl.getCurVal()), 1, cntr);
 					break;
-				case SPECTRUM:	//need to figure out how to turn an int into a Color?
+				case SPECTRUM:	//need to figure out how to turn an int into a Color? (lol not likely)
 								//I really don't think that's gonna work, we're gonna need something else
 								//unfortunately that means a more complex struct, methinks... or perhaps we could use
 								//.min, .max, and .cur for the 3 integer values (RGB)...  ;)

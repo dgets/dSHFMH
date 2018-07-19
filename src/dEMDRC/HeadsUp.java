@@ -80,9 +80,13 @@ public class HeadsUp extends Application {
 		gmt = new Timer();
 		
 		if (opts.debuggingGen()) {
-			System.out.println("uSet.initStructs() is on deck.");
+			System.out.println("uSet.initStructs() is on deck");
 		}
 		uSet.initStructs();
+		if (opts.debuggingGenTest()) {
+			System.out.println("after uSet.initStructs(), uSet.availableOptions.size() = " + uSet.availableOptions.size());
+		}
+		
 		blonk = new AudioStim();
 		
 		//immediate timer activation (for testing)

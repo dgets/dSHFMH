@@ -164,7 +164,7 @@ public class Options {
 					if (debuggingFileIO()) {
 						System.out.println("In UserSet() constructor\nsettingsPath: " + settingsPath + 
 										   "\nuSettings general info: " + uSettings.toString() + 
-										   "uSettings.length() = " + uSettings.length() +
+										   "\t\tuSettings.length() = " + uSettings.length() +
 										   "\t\tuSettings.canRead() = " + uSettings.canRead() +
 										   "\t\tuSettings.canWrite() = " + uSettings.canWrite() + "\n");
 					}	
