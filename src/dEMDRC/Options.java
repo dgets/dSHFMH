@@ -165,7 +165,8 @@ public class Options {
 										   "\t\tuSettings.canRead() = " + uSettings.canRead() +
 										   "\t\tuSettings.canWrite() = " + uSettings.canWrite() + "\n");
 					}
-					HeadsUp.uSet.customizedSettings = readUserSet(uSettings);
+					//HeadsUp.uSet.customizedSettings = readUserSet(uSettings);
+					loadXMLSettings();
 				} catch (Exception ex) {
 					//our hangup is coming in above 8o|
 					System.err.println("Issues reading/unpacking data from " + uSettings.getName() + " into " +
@@ -336,10 +337,10 @@ public class Options {
 			}
 			
 			File uSettings = new File(HeadsUp.uSet.settingsPath);
-			FileInputStream rawGush = null;
-			ObjectInputStream gush = null;
+			/*FileInputStream rawGush = null;
+			ObjectInputStream gush = null;*/
 			if (uSettings.exists() && uSettings.canRead()) {
-				try {
+				/*try {
 					rawGush = new FileInputStream(uSettings);
 					gush = new ObjectInputStream(rawGush);
 				} catch (FileNotFoundException ex) {
@@ -358,7 +359,8 @@ public class Options {
 				} finally {
 					rawGush.close();
 					gush.close();
-				}
+				}*/
+				loadXMLSettings();
 			} else {
 				//this is not the optimal way to do this 8o|
 				//also we should put this bit in a separate method, so that I don't have to go through the above loop & switch/case
