@@ -1,11 +1,15 @@
 package dEMDRC;
 
+import java.beans.XMLDecoder;
+import java.beans.XMLEncoder;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -126,22 +130,15 @@ public class Options {
 	//user modifiable values
 	public class UserSet implements Serializable {
 		private static final long serialVersionUID = 4271985271438883908L;
-
-		//available options
-		public HashMap<String, ControlType> availableOptions = new HashMap<String, ControlType>();
-		
-		//display options
-		//NOTE: we'll be putting window sizes in here at some point, but initially our defaults are good enough; this can
-		//be saved for a beta version
-		//NOTE: we're also changing this to use a HashMap now, because eff this
-		
 		//new structure for the customized settings
 		//obviously, with this rudimentary implementation, we're going to have to deal with conversion of Colors & booleans
 		//to and from integers.  why do I have the feeling that that won't make it through more than a week of code iterations?
-		public HashMap<String, Integer> customizedSettings = new HashMap<String, Integer>();
 		
-		//user settings location
-		public final String settingsPath = new String(".dEMDRrc");
+		public HashMap<String, Integer> customizedSettings = new HashMap<String, Integer>();	//issue?
+		
+		//user settings location (switching to XML)
+		//public final String settingsPath = new String(".dEMDRrc");
+		public final String settingsPath = new String(".dEMDR.xml");
 		
 		//internal schitt
 		private boolean foundUserSettings;
@@ -167,12 +164,13 @@ public class Options {
 										   "\t\tuSettings.length() = " + uSettings.length() +
 										   "\t\tuSettings.canRead() = " + uSettings.canRead() +
 										   "\t\tuSettings.canWrite() = " + uSettings.canWrite() + "\n");
-					}	
+					}
 					HeadsUp.uSet.customizedSettings = readUserSet(uSettings);
 				} catch (Exception ex) {
 					//our hangup is coming in above 8o|
 					System.err.println("Issues reading/unpacking data from " + uSettings.getName() + " into " +
-									   "HeadsUp.userPrefsDisplay.uSet\nMsg: " + ex.getMessage());
+									   "HeadsUp.uSet.customizedSettings\nMsg: " + ex.getMessage());
+					ex.printStackTrace();
 				}
 			}
 		}
@@ -182,15 +180,43 @@ public class Options {
 			return foundUserSettings;
 		}
 		
+		@SuppressWarnings("unchecked")
+		public void loadXMLSettings() {
+			XMLDecoder decoder = null;
+			
+			try {
+				decoder = new XMLDecoder(new BufferedInputStream(new FileInputStream(settingsPath)));
+			} catch (FileNotFoundException ex) {
+				System.out.println("* File: " + settingsPath + " not found\nMsg: " + ex.getMessage());
+			}
+			
+			HeadsUp.uSet.customizedSettings = (HashMap<String, Integer>)decoder.readObject();
+		}
+		
+		public void saveXMLSettings() {
+			XMLEncoder encoder = null;
+			
+			try {
+				encoder = new XMLEncoder(new BufferedOutputStream(new FileOutputStream(settingsPath)));
+			} catch (FileNotFoundException ex) {
+				System.out.println("* Can't serialize to XML: " + ex.getMessage());
+			}
+			
+			encoder.writeObject(HeadsUp.uSet.customizedSettings);
+			encoder.close();
+		}
+		
 		/**
 		 * Method will attempt to load the user's settings
 		 * 
 		 * @param uSetFile
 		 */
-		@SuppressWarnings({ "null", "unchecked" })
+		@SuppressWarnings({ "unchecked" })
 		private HashMap<String, Integer> readUserSet(File uSetFile) throws Exception, NullPointerException {
-			Object tmpUserSettings = null;
+			//byte[] tmpUserSettings = null;
 			FileInputStream dataBarf = null;
+			ObjectInputStream objBarf = null;
+			Object ouah = null;
 			
 			try {
 				if (HeadsUp.opts.debuggingFileIO()) {
@@ -198,6 +224,7 @@ public class Options {
 									   "dataBarf target: " + uSetFile.getAbsolutePath() + "\n\n");
 				}
 				dataBarf = new FileInputStream(uSetFile);
+				objBarf = new ObjectInputStream(dataBarf);
 			} catch (IOException ex) {
 				if (HeadsUp.opts.debuggingFileIO()) {
 					System.err.println("* Error opening InputStream to " + uSetFile.getName() + "\nMsg: " + 
@@ -208,18 +235,19 @@ public class Options {
 				System.err.println("* Null pointer working with instaniating 'dataBarf' in " +
 								   "Options.UserSet.readUserSet()\nMsg: " + ex.getMessage());
 				dataBarf.close();
+				objBarf.close();
 				throw new Exception("Unable to open InputStream to uSetFile due to null pointer issues");
 			}
 			
 			//might want to do some error checking here based on the # of bytes .available() compared to the size of our
 			//UserSet object
 			try {
-				if (HeadsUp.opts.debuggingFileIO()) {
+				/*if (HeadsUp.opts.debuggingFileIO()) {
 					System.out.println("Attempting read from FIS 'dataBarf'\ntmpUserSet general details: " +
 									   tmpUserSettings.toString() + "\ndataBarf general details: " +
 									   dataBarf.toString() + "\ndataBarf bytes remaining: " + dataBarf.available());
-				}
-				dataBarf.read((byte[])tmpUserSettings);
+				}*/
+				ouah = objBarf.readObject();
 			} catch (IOException ex) {
 				System.err.println("* Error reading from FileInputStream to " + uSetFile.getName() + "\nMsg: " +
 								   ex.getMessage());
@@ -228,23 +256,22 @@ public class Options {
 				//here's where we've got the hangup right now
 				System.err.println("* Null pointer working with reading from 'dataBarf' in " +
 								   "Options.UserSet.readUserSet()\nMsg: " + ex.getMessage() + "\ndataBarf: " +
-								   dataBarf.toString() + "\ntmpUserSet: " + ((UserSet)tmpUserSettings).toString());
+								   objBarf.toString() /*+ "\ntmpUserSet: " + ((UserSet)tmpUserSettings).toString()*/);
 				throw new Exception("Error reading from uSetFile (NullPointerException)");
 			} finally {
 				dataBarf.close();
+				objBarf.close();
 			}
 			
-			if (HeadsUp.opts.debuggingFileIO()) {
-				System.out.println("tmpUserSet has deserialized contents: " + ((UserSet)tmpUserSettings).toString());
-			}
-			
-			return (HashMap<String, Integer>)tmpUserSettings;
+			return (HashMap<String, Integer>)ouah;
 		}
 		
 		/**
 		 * Method initializes the data structures used to hold the user preferences panel labels & controls' data
+		 * 
+		 * @throws IOException 
 		 */
-		public void initStructs() {
+		public void initStructs() throws IOException {
 			int cntr = 0;
 			int min, max, cur;
 			
@@ -309,7 +336,7 @@ public class Options {
 			}
 			
 			File uSettings = new File(HeadsUp.uSet.settingsPath);
-			FileInputStream rawGush;
+			FileInputStream rawGush = null;
 			ObjectInputStream gush = null;
 			if (uSettings.exists() && uSettings.canRead()) {
 				try {
@@ -328,26 +355,28 @@ public class Options {
 					System.err.println("Class not found exception!\nMsg: " + ex.getMessage());
 				} catch (IOException ex) {
 					System.err.println("IO issues while trying to load defaults!\nMsg: " + ex.getMessage());
+				} finally {
+					rawGush.close();
+					gush.close();
 				}
-			}
+			} else {
+				//this is not the optimal way to do this 8o|
+				//also we should put this bit in a separate method, so that I don't have to go through the above loop & switch/case
+				//when I'm initializing everything due to a bogus serialization stream read attempt
+				HeadsUp.uSet.customizedSettings.put("KittWidth", MaxX);
+				HeadsUp.uSet.customizedSettings.put("KittHeight", MaxY);
+				HeadsUp.uSet.customizedSettings.put("BgColor", bgColor.getIntArgbPre());	//bogus, almost
+				HeadsUp.uSet.customizedSettings.put("FgColor", fgColor.getIntArgbPre());	//certainly here
+				HeadsUp.uSet.customizedSettings.put("SessionDuration", SessionDurationInMin);
+				HeadsUp.uSet.customizedSettings.put("PauseInMS", DefaultPauseInMS);
+				HeadsUp.uSet.customizedSettings.put("BeepAudio", 0);
+				HeadsUp.uSet.customizedSettings.put("StereoAudio", 1);
+				HeadsUp.uSet.customizedSettings.put("AStimFrequency", AStimFreq);
+				HeadsUp.uSet.customizedSettings.put("AStimDuration", AStimDurInMS);
 			
-			
-			//this is not the optimal way to do this 8o|
-			//also we should put this bit in a separate method, so that I don't have to go through the above loop & switch/case
-			//when I'm initializing everything due to a bogus serialization stream read attempt
-			HeadsUp.uSet.customizedSettings.put("KittWidth", MaxX);
-			HeadsUp.uSet.customizedSettings.put("KittHeight", MaxY);
-			HeadsUp.uSet.customizedSettings.put("BgColor", bgColor.getIntArgbPre());	//bogus, almost
-			HeadsUp.uSet.customizedSettings.put("FgColor", fgColor.getIntArgbPre());	//certainly here
-			HeadsUp.uSet.customizedSettings.put("SessionDuration", SessionDurationInMin);
-			HeadsUp.uSet.customizedSettings.put("PauseInMS", DefaultPauseInMS);
-			HeadsUp.uSet.customizedSettings.put("BeepAudio", 0);
-			HeadsUp.uSet.customizedSettings.put("StereoAudio", 1);
-			HeadsUp.uSet.customizedSettings.put("AStimFrequency", AStimFreq);
-			HeadsUp.uSet.customizedSettings.put("AStimDuration", AStimDurInMS);
-			
-			if (HeadsUp.opts.debuggingTest()) {
-				System.out.println(HeadsUp.uSet.customizedSettings.toString());
+				if (HeadsUp.opts.debuggingTest()) {
+					System.out.println("Set HeadsUp.uSet.customizedSettings to:\n" + HeadsUp.uSet.customizedSettings.toString());
+				}
 			}
 		}
 		
@@ -396,11 +425,15 @@ public class Options {
 		 * So yeah I guess this one is for initializing HeadsUp.uSet.customizedSettings in case of an incomplete or tampered
 		 * with serialization stream
 		 * 
-		 * @throws ObjectStreamException
+		 * @throws IOException 
 		 */
 		@SuppressWarnings("unused")
-		private void readObjectNoData() throws ObjectStreamException {
-			HeadsUp.uSet.initStructs();
+		private void readObjectNoData() {
+			try {
+				HeadsUp.uSet.initStructs();
+			} catch (IOException ex) {
+				System.out.println("readObjectNoData(): " + ex.getMessage());
+			}
 		}
 		
 		/**

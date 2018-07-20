@@ -54,7 +54,6 @@ public class UserPrefsHandler implements EventHandler<ActionEvent> {
 		if (HeadsUp.opts.debuggingGen()) {
 			System.out.println("\nInitializing prefControls . . ");
 			System.out.println("Options.controlStruct.size() = " + Options.controlStruct.size());
-			System.out.println("uSet.availableOptions.size() = " + HeadsUp.uSet.availableOptions.size() + "\n");
 		}
 		
 		for (ControlGrid prefCtrl : Options.controlStruct) {
@@ -201,15 +200,39 @@ public class UserPrefsHandler implements EventHandler<ActionEvent> {
 		public void handle(ActionEvent arg0) {
 			try {
 				//first we need to set up everything in HeadsUp.uSet, etc
-				
-				
-				//now we can save it
-				doSave();
+				//what the hell was I talking about there?
+				//now we can save it -- switching to XML
+				//doSave();
+				doXMLSave();
 			} catch (Exception ex) {
 				System.err.println(ex.getMessage());
 			}
 			HeadsUp.togglePause();
 			guhUpDown();
+		}
+		
+		private void doXMLSave() throws Exception {
+			//WHY do we need to populate first?  This isn't handled right...
+			populateSettings();
+			
+			File uSettings = new File(HeadsUp.uSet.settingsPath);
+			if (uSettings.exists()) {
+				//wipe the old
+				resetSaveFile(uSettings);
+			}
+			
+			HeadsUp.uSet.saveXMLSettings();
+		}
+		
+		private void resetSaveFile(File uSetFile) {
+			try {
+				uSetFile.delete();
+				uSetFile.createNewFile();
+				uSetFile.setWritable(true);
+			} catch (IOException ex) {
+				System.err.println("Issues trying to reset save file!\nMsg: " + ex.getMessage());
+				//throw new Exception("Unable to save user settings");
+			}		
 		}
 		
 		/**
@@ -225,14 +248,7 @@ public class UserPrefsHandler implements EventHandler<ActionEvent> {
 			File uSettings = new File(HeadsUp.uSet.settingsPath);
 			if (uSettings.exists()) {
 				//wipe the old
-				try {
-					uSettings.delete();
-					uSettings.createNewFile();
-					uSettings.setWritable(true);
-				} catch (IOException ex) {
-					System.err.println("Issues trying to save settings!\nMsg: " + ex.getMessage());
-					throw new Exception("Unable to save user settings");
-				}
+				resetSaveFile(uSettings);
 			}
 			
 			//waiting for testing feedback

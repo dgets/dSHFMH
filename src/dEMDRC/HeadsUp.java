@@ -83,9 +83,6 @@ public class HeadsUp extends Application {
 			System.out.println("uSet.initStructs() is on deck");
 		}
 		uSet.initStructs();
-		if (opts.debuggingGenTest()) {
-			System.out.println("after uSet.initStructs(), uSet.availableOptions.size() = " + uSet.availableOptions.size());
-		}
 		
 		blonk = new AudioStim();
 		
