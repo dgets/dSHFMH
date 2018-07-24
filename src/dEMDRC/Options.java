@@ -47,10 +47,10 @@ public class Options {
 	public static final int AStimDurInMS = 15;
 	public static final int ASampleRate = 16 * 1024;
 	public static final boolean StereoAudio = true;
-	private static final int MinAStimFreq = 20;
-	private static final int MaxAStimFreq = 20000;
-	private static final int MinAStimDur = 10;
-	private static final int MaxAStimDur = 250;
+	public static final int MinAStimFreq = 20;
+	public static final int MaxAStimFreq = 20000;
+	public static final int MinAStimDur = 10;
+	public static final int MaxAStimDur = 250;
 	
 	//ouah
 	public HashMap<String, Integer> debugging = new HashMap<String, Integer>();	//can't figure out declaration syntax :|
@@ -66,7 +66,7 @@ public class Options {
 										   ControlType.SPECTRUM, ControlType.NUMERIC, ControlType.SLIDER,
 										   ControlType.TOGGLE, ControlType.TOGGLE, ControlType.NUMERIC,
 										   ControlType.NUMERIC };
-	public static ArrayList<UserPrefsHandler.ControlGrid> controlStruct = new ArrayList<UserPrefsHandler.ControlGrid>();	
+	//public static ArrayList<UserPrefsHandler.ControlGrid> controlStruct = new ArrayList<UserPrefsHandler.ControlGrid>();	
 	
 	//constructor(s)
 	public Options() {
@@ -166,7 +166,7 @@ public class Options {
 										   "\t\tuSettings.canWrite() = " + uSettings.canWrite() + "\n");
 					}
 					//HeadsUp.uSet.customizedSettings = readUserSet(uSettings);
-					loadXMLSettings();
+					//loadXMLSettings();
 				} catch (Exception ex) {
 					//our hangup is coming in above 8o|
 					System.err.println("Issues reading/unpacking data from " + uSettings.getName() + " into " +
@@ -192,6 +192,10 @@ public class Options {
 			}
 			
 			HeadsUp.uSet.customizedSettings = (HashMap<String, Integer>)decoder.readObject();
+			if (debuggingFileIO()) {
+				System.out.println("loadXMLSettings:" + /*ouahful:\t" + ouahful.toString() +*/ 
+								   "\nHeadsUp.uSet.customizedSettings:\t" + HeadsUp.uSet.customizedSettings.toString());
+			}
 		}
 		
 		public void saveXMLSettings() {
@@ -202,7 +206,10 @@ public class Options {
 			} catch (FileNotFoundException ex) {
 				System.out.println("* Can't serialize to XML: " + ex.getMessage());
 			}
-			
+			if (debuggingFileIO()) {
+				System.out.println("saveXMLSettings():\nHeadsUp.uSet.customizedSettings:\t" + 
+								   HeadsUp.uSet.customizedSettings.toString());
+			}
 			encoder.writeObject(HeadsUp.uSet.customizedSettings);
 			encoder.close();
 		}
@@ -212,7 +219,7 @@ public class Options {
 		 * 
 		 * @param uSetFile
 		 */
-		@SuppressWarnings({ "unchecked" })
+		/*@SuppressWarnings({ "unchecked" })
 		private HashMap<String, Integer> readUserSet(File uSetFile) throws Exception, NullPointerException {
 			//byte[] tmpUserSettings = null;
 			FileInputStream dataBarf = null;
@@ -242,12 +249,12 @@ public class Options {
 			
 			//might want to do some error checking here based on the # of bytes .available() compared to the size of our
 			//UserSet object
-			try {
+			try { */
 				/*if (HeadsUp.opts.debuggingFileIO()) {
 					System.out.println("Attempting read from FIS 'dataBarf'\ntmpUserSet general details: " +
 									   tmpUserSettings.toString() + "\ndataBarf general details: " +
 									   dataBarf.toString() + "\ndataBarf bytes remaining: " + dataBarf.available());
-				}*/
+				}
 				ouah = objBarf.readObject();
 			} catch (IOException ex) {
 				System.err.println("* Error reading from FileInputStream to " + uSetFile.getName() + "\nMsg: " +
@@ -257,15 +264,15 @@ public class Options {
 				//here's where we've got the hangup right now
 				System.err.println("* Null pointer working with reading from 'dataBarf' in " +
 								   "Options.UserSet.readUserSet()\nMsg: " + ex.getMessage() + "\ndataBarf: " +
-								   objBarf.toString() /*+ "\ntmpUserSet: " + ((UserSet)tmpUserSettings).toString()*/);
-				throw new Exception("Error reading from uSetFile (NullPointerException)");
+								   objBarf.toString() /*+ "\ntmpUserSet: " + ((UserSet)tmpUserSettings).toString());*/
+				/*throw new Exception("Error reading from uSetFile (NullPointerException)");
 			} finally {
 				dataBarf.close();
 				objBarf.close();
 			}
 			
 			return (HashMap<String, Integer>)ouah;
-		}
+		}*/
 		
 		/**
 		 * Method initializes the data structures used to hold the user preferences panel labels & controls' data
@@ -273,14 +280,40 @@ public class Options {
 		 * @throws IOException 
 		 */
 		public void initStructs() throws IOException {
-			int cntr = 0;
-			int min, max, cur;
+			/*int cntr = 0;
+			int min, max, cur;*/
 			
 			if (HeadsUp.opts.debuggingGen()) {
 				System.out.println("Loading structs . . .");
 			}
 			
-			for (String ouah : optionText) {
+			File uSettings = new File(HeadsUp.uSet.settingsPath);
+			if (uSettings.exists() && uSettings.canRead()) {
+				if (debuggingFileIO()) {
+					System.out.println("Heading to loadXMLSettings() from initStructs()");
+				}
+				loadXMLSettings();
+			} else {
+				//this is not the optimal way to do this 8o|
+				//also we should put this bit in a separate method, so that I don't have to go through the above loop & switch/case
+				//when I'm initializing everything due to a bogus serialization stream read attempt
+				HeadsUp.uSet.customizedSettings.put("Bar Width", MaxX);
+				HeadsUp.uSet.customizedSettings.put("Bar Height", MaxY);
+				HeadsUp.uSet.customizedSettings.put("Background Color", bgColor.getIntArgbPre());	//bogus, almost
+				HeadsUp.uSet.customizedSettings.put("Foreground Color", fgColor.getIntArgbPre());	//certainly here
+				HeadsUp.uSet.customizedSettings.put("Session Duration", SessionDurationInMin);
+				HeadsUp.uSet.customizedSettings.put("Display Speed", DefaultPauseInMS);
+				HeadsUp.uSet.customizedSettings.put("Beep", 0);
+				HeadsUp.uSet.customizedSettings.put("Stereo Audio", 1);
+				HeadsUp.uSet.customizedSettings.put("Tone Frequency", AStimFreq);
+				HeadsUp.uSet.customizedSettings.put("Tone Duration", AStimDurInMS);
+			
+				if (HeadsUp.opts.debuggingTest()) {
+					System.out.println("Set HeadsUp.uSet.customizedSettings to:\n" + HeadsUp.uSet.customizedSettings.toString());
+				}
+			}
+			
+			/*for (String ouah : optionText) {
 				min = -1; max = -1; cur = -1;
 				
 				//setting individual control specifics
@@ -334,52 +367,9 @@ public class Options {
 				}
 				
 				controlStruct.add(HeadsUp.userPrefsDisplay.new ControlGrid(ouah, optionControl[cntr++], min, max, cur));
-			}
+			}*/
 			
-			File uSettings = new File(HeadsUp.uSet.settingsPath);
-			/*FileInputStream rawGush = null;
-			ObjectInputStream gush = null;*/
-			if (uSettings.exists() && uSettings.canRead()) {
-				/*try {
-					rawGush = new FileInputStream(uSettings);
-					gush = new ObjectInputStream(rawGush);
-				} catch (FileNotFoundException ex) {
-					System.err.println("So yeah, a case I just ruled out by algorithmic testing somehow just happened.\n" +
-									   "Msg: " + ex.getMessage());
-				} catch (IOException ex) {
-					System.err.println("IO issues while trying to open streams to read defaults!\nMsg: " + ex.getMessage());
-				}
-				
-				try {
-					HeadsUp.uSet.readObject(gush);
-				} catch (ClassNotFoundException ex) {
-					System.err.println("Class not found exception!\nMsg: " + ex.getMessage());
-				} catch (IOException ex) {
-					System.err.println("IO issues while trying to load defaults!\nMsg: " + ex.getMessage());
-				} finally {
-					rawGush.close();
-					gush.close();
-				}*/
-				loadXMLSettings();
-			} else {
-				//this is not the optimal way to do this 8o|
-				//also we should put this bit in a separate method, so that I don't have to go through the above loop & switch/case
-				//when I'm initializing everything due to a bogus serialization stream read attempt
-				HeadsUp.uSet.customizedSettings.put("KittWidth", MaxX);
-				HeadsUp.uSet.customizedSettings.put("KittHeight", MaxY);
-				HeadsUp.uSet.customizedSettings.put("BgColor", bgColor.getIntArgbPre());	//bogus, almost
-				HeadsUp.uSet.customizedSettings.put("FgColor", fgColor.getIntArgbPre());	//certainly here
-				HeadsUp.uSet.customizedSettings.put("SessionDuration", SessionDurationInMin);
-				HeadsUp.uSet.customizedSettings.put("PauseInMS", DefaultPauseInMS);
-				HeadsUp.uSet.customizedSettings.put("BeepAudio", 0);
-				HeadsUp.uSet.customizedSettings.put("StereoAudio", 1);
-				HeadsUp.uSet.customizedSettings.put("AStimFrequency", AStimFreq);
-				HeadsUp.uSet.customizedSettings.put("AStimDuration", AStimDurInMS);
 			
-				if (HeadsUp.opts.debuggingTest()) {
-					System.out.println("Set HeadsUp.uSet.customizedSettings to:\n" + HeadsUp.uSet.customizedSettings.toString());
-				}
-			}
 		}
 		
 		/**

@@ -74,15 +74,16 @@ public class HeadsUp extends Application {
 		controls.setTitle("sooo manipulative . . .");
 		controls.show();
 		
-		toggleActive.setOnAction(new ToggleKitt());
-		goUserPrefs.setOnAction(userPrefsDisplay = new UserPrefsHandler());
-		
-		gmt = new Timer();
-		
 		if (opts.debuggingGen()) {
 			System.out.println("uSet.initStructs() is on deck");
 		}
 		uSet.initStructs();
+		//uSet.loadXMLSettings();
+		
+		toggleActive.setOnAction(new ToggleKitt());
+		goUserPrefs.setOnAction(userPrefsDisplay = new UserPrefsHandler());	//needs to be after XML is loaded (above block?)
+		
+		gmt = new Timer();
 		
 		blonk = new AudioStim();
 		

@@ -4,8 +4,10 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 
 import dEMDRC.Options.ControlType;
+import dEMDRC.UserPrefsHandler.ControlGrid;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.AccessibleRole;
@@ -26,6 +28,8 @@ public class UserPrefsHandler implements EventHandler<ActionEvent> {
 	
 	private double worldX = -1;
 	private double worldY = -1;
+	
+	private ArrayList<UserPrefsHandler.ControlGrid> controlStruct = new ArrayList<UserPrefsHandler.ControlGrid>();
 
 	@Override
 	public void handle(ActionEvent arg0) {
@@ -33,6 +37,8 @@ public class UserPrefsHandler implements EventHandler<ActionEvent> {
 		Button abandonExit = new Button("Abandon & Exit");
 		Label lblSetting = new Label("Setting");
 		Label lblValue = new Label("Value");
+		
+		//gotta make it PWETTY
 		saveExit.setStyle("-fx-font-weight: bold;");
 		abandonExit.setStyle("-fx-font-weight: bold;");
 		lblSetting.setStyle("-fx-font-weight: bold;");
@@ -47,16 +53,15 @@ public class UserPrefsHandler implements EventHandler<ActionEvent> {
 		userSettingsGrid.setVgap(5); userSettingsGrid.setHgap(3);
 		
 		//setting description column
-		//NOTE: these need to stand out a little bit; find out how to mess with the font & attributes
 		userSettingsGrid.add(lblSetting, 0, 0);
 		userSettingsGrid.add(lblValue, 1, 0);
 		
 		if (HeadsUp.opts.debuggingGen()) {
 			System.out.println("\nInitializing prefControls . . ");
-			System.out.println("Options.controlStruct.size() = " + Options.controlStruct.size());
+			System.out.println("Options.controlStruct.size() = " + controlStruct.size());
 		}
 		
-		for (ControlGrid prefCtrl : Options.controlStruct) {
+		for (ControlGrid prefCtrl : controlStruct) {
 			if (HeadsUp.opts.debuggingGenTest()) {
 				System.out.print("Adding prefCtrl: " + prefCtrl.getName());
 			}
@@ -118,6 +123,72 @@ public class UserPrefsHandler implements EventHandler<ActionEvent> {
 		this.worldY = y;
 	}
 	
+	//looks like we need a constructor heah
+	public UserPrefsHandler() {
+		int cntr = 0;
+		int min, max, cur;
+		
+		for (String ouah : HeadsUp.opts.optionText) {
+			/*if (HeadsUp.opts.debuggingGen()) {
+				System.out.println("Populating UserPrefsHandler instance: " + ouah);
+				System.out.println("HeadsUp.uSet.customizedSettings.get(ouah): " + HeadsUp.uSet.customizedSettings.get(ouah));
+			}*/
+			min = -1; max = -1; cur = -1;
+			
+			//setting individual control specifics
+			switch (ouah) {
+				case "Bar Width":
+					min = 640;
+					max = Options.MaxX;
+					cur = HeadsUp.uSet.customizedSettings.get(ouah);
+					break;
+				case "Bar Height":
+					min = (Options.BoxMaxY * 3);
+					max = Options.MaxY;
+					cur = HeadsUp.uSet.customizedSettings.get(ouah);
+					break;
+				case "Background Color":
+					min = 0;	//Color.BLACK.getIntArgbPre();	//not sure about this...
+					max = Integer.MAX_VALUE;
+					cur = 0;	//MyBgColor.getIntArgbPre();	//again, :-?(beep)
+					break;
+				case "Foreground Color":
+					min = 0;	//Color.BLACK.getIntArgbPre();	//not sure about this...
+					max = Integer.MAX_VALUE;
+					cur = 0;	//MyFgColor.getIntArgbPre();	//again, :-?(beep)
+					break;
+				case "Total Duration":
+					min = 1;
+					max = 12;	//arbitrary; will need to look up medical data for EMDR for this value to be proper
+					cur = HeadsUp.uSet.customizedSettings.get(ouah);
+					break;
+				case "Display Speed":
+					min = Options.MinimumPauseInMS;
+					max = Options.MaximumPauseInMS;
+					cur = HeadsUp.uSet.customizedSettings.get(ouah);
+					break;
+				case "Beep":
+				case "Stereo Audio":
+					min = 0;
+					max = 1;
+					cur = 0;
+					break;
+				case "Tone Frequency":
+					min = Options.MinAStimFreq;
+					max = Options.MaxAStimFreq;
+					cur = HeadsUp.uSet.customizedSettings.get(ouah);
+					break;
+				case "Tone Duration":
+					min = Options.MinAStimDur;
+					max = Options.MaxAStimDur;
+					cur = HeadsUp.uSet.customizedSettings.get(ouah);
+					break;
+			}
+			
+			controlStruct.add(HeadsUp.userPrefsDisplay.new ControlGrid(ouah, HeadsUp.opts.optionControl[cntr++], min, max, cur));
+		}
+	}
+	
 	//general methods, detc
 	private void guhUpDown() {
 		HeadsUp.restoreInput();
@@ -171,26 +242,19 @@ public class UserPrefsHandler implements EventHandler<ActionEvent> {
 		
 		public void setCurVal(int curVal) {
 			this.curVal = curVal;
+			//this.curVal = HeadsUp.uSet.customizedSettings.get(this.getName());
 		}
 		
-		//construcor(s)
+		//constructor(s)
 		public ControlGrid(String name, ControlType controlType, int minValue, int maxValue, int curValue) {
 			setName(name);
 			setCType(controlType);
 			setMin(minValue);
 			setMax(maxValue);
 			setCurVal(curValue);
-			
-			if ((controlType == Options.ControlType.NUMERIC) || (controlType == Options.ControlType.SLIDER) ||
-				(controlType == Options.ControlType.SPECTRUM) || (controlType == Options.ControlType.TOGGLE)) {
-				
-			}
 		}
 		
 		//general methods
-		/*private void setUserData(Options.ControlType thisCtrlType) {
-			
-		}*/
 	}
 	
 	//event handlers
@@ -241,7 +305,7 @@ public class UserPrefsHandler implements EventHandler<ActionEvent> {
 		 * @return
 		 * @throws Exception
 		 */
-		private Options.UserSet doSave() throws Exception {
+		/*private Options.UserSet doSave() throws Exception {
 			//first we need to populate the settings, derp
 			populateSettings();
 			
@@ -276,7 +340,7 @@ public class UserPrefsHandler implements EventHandler<ActionEvent> {
 			
 			//um, is this really necessary?  I really haven't slept for quite awhile now...
 			return HeadsUp.uSet;	//pretty friggin' sure that's not necessary
-		}
+		}*/
 		
 		/**
 		 * Method populates user settings with data from the UserPrefs form
