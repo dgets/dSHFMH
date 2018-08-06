@@ -19,7 +19,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class HeadsUp extends Application {
-	private Timer gmt;
+	public static Timer gmt;
 	
 	private Group wutGroot = new Group();
 	private Scene kR = new Scene(wutGroot, Options.MaxX, Options.MaxY, Color.BLACK);
@@ -31,18 +31,21 @@ public class HeadsUp extends Application {
 	private static GridPane dash = new GridPane();	//also this needs to be comfortably set below kitt
 	private static Region veil = new Region();
 	
-	public static AudioStim blonk = new AudioStim();	//not sure about this being static... audio issues?
+	public static Options opts = new Options();
+	public static Options.UserSet uSet = opts.new UserSet();
+	public static AudioStim blonk;	//not sure about this being static... audio issues?
+	public static UserPrefsHandler userPrefsDisplay;
 	
-	//getters/setters
-	public GraphicsContext getGC() {
-		return gc;
-	}
-	
+	/**
+	 * I guess this would be the equivalent of our 'main()' while we're working with javafx
+	 * 
+	 */
 	@Override
 	public void start(Stage world) throws Exception {
-		//testing
-		gc = DisplayArray.swoosh(gc);
-		wutGroot.getChildren().add(ouahPad);
+		if (opts.debuggingTest()) { 
+			gc = DisplayArray.swoosh(gc);
+			wutGroot.getChildren().add(ouahPad);
+		}
 		
 		//eyes array
 		world.setScene(kR);
@@ -71,20 +74,45 @@ public class HeadsUp extends Application {
 		controls.setTitle("sooo manipulative . . .");
 		controls.show();
 		
+		if (opts.debuggingGen()) {
+			System.out.println("uSet.initStructs() is on deck");
+		}
+		uSet.initStructs();
+		//uSet.loadXMLSettings();
+		
 		toggleActive.setOnAction(new ToggleKitt());
-		goUserPrefs.setOnAction(new UserPrefs());
+		userPrefsDisplay = new UserPrefsHandler();
+		userPrefsDisplay.init();
+		goUserPrefs.setOnAction(userPrefsDisplay);
 		
 		gmt = new Timer();
 		
+		blonk = new AudioStim();
+		
 		//immediate timer activation (for testing)
-		if (Options.testing) { 
+		if (opts.debuggingTest()) { 
 			toggleActive.setText("Stop");
 			scheduleBounce();
 		}
 		
 		//any init for other objects
-		UserPrefs.setWorldXY(world.getX(), world.getY());	//not working
+		userPrefsDisplay.setWorldXY(world.getX(), world.getY());	//working?
+	}
+	
+	public static void togglePause() {
+		if (DisplayArray.paused) {
+			HeadsUp.gmt.notify();
+		} else {
+			try {
+				HeadsUp.gmt.wait();
+			} catch (InterruptedException ex) {
+				System.err.println("Issue asking gmt scheduler to wait!\nMsg: " + ex.getMessage());
+			} catch (Exception ex) {
+				System.err.println("Unknown error asking gmt scheduler to wait!\nMsg: " + ex.getMessage());
+			}
+		}
 		
+		DisplayArray.paused = !DisplayArray.paused;
 	}
 	
 	/**
@@ -123,7 +151,7 @@ public class HeadsUp extends Application {
 	/**
 	 * Just a wrapper for scheduling a new bounce task so that we're not duplicating so much code
 	 */
-	private void scheduleBounce() {
+	public void scheduleBounce() {
 		gmt.schedule(new BounceTask(), (Options.DefaultPauseInMS / DisplayArray.determineEyesInArray(Options.MaxX)));
 	}
 
@@ -133,7 +161,7 @@ public class HeadsUp extends Application {
 		
 		//need the constructor nao
 		public ToggleKitt() {
-			if (Options.testing) {
+			if (opts.debuggingTest()) {
 				running = true;
 			} else {
 				running = false;
@@ -146,12 +174,10 @@ public class HeadsUp extends Application {
 			toggle();
 		}
 		
-		//getter/setter (fucking ouah I hate the static dichotomy, need to review that shit in my books)
-		/*public void setRunning(boolean run) {
-			running = run;
-		}*/
-		
-		//for all of those invocations
+		/**
+		 * Method toggles the status of the running flag, starts or cancels the timer scheduling depending on what running state
+		 * we're going into, and toggles the text of the toggleActive button
+		 */
 		public void toggle() {
 			running = !running;
 			
@@ -165,12 +191,11 @@ public class HeadsUp extends Application {
 		}
 	}
 	
-	private class BounceTask extends TimerTask {
+	public class BounceTask extends TimerTask {
 		public void run() {
 			DisplayArray.swoosh(gc);
 			
 			if (DisplayArray.moreRemaining()) {
-				//this.remaining--;
 				gmt.schedule(new BounceTask(), (Options.DefaultPauseInMS / DisplayArray.determineEyesInArray(Options.MaxX)));
 			} else {
 				//we need to change the controls (start/stop) status nao

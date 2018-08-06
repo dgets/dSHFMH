@@ -1,2 +1,6 @@
 *.class
 *.sw?
+.dEMDRrc
+.dEMDR.xml
+/bin/
+

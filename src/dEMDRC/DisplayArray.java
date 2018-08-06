@@ -1,5 +1,7 @@
 package dEMDRC;
 
+import javax.sound.sampled.LineUnavailableException;
+
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
@@ -7,7 +9,8 @@ public class DisplayArray {
 	//our shite
 	private static int direction = 1;
 	private static int location = 1;	//1 - (determineEyesInArray(xSize) - 1)
-	private static int remaining = Options.TotalIterations;
+	private static int remaining = HeadsUp.opts.TotalIterations;
+	public static boolean paused = false;
 	
 	//getters/setters (retentive for this, to be sure)
 	public int getDirection() {
@@ -25,6 +28,12 @@ public class DisplayArray {
 	 */
 	public static int toggleDirection() {
 		direction *= -1;
+		remaining--;
+		
+		if (HeadsUp.opts.debuggingDisplay()) {
+			System.out.println("Display iterations remaining: " + remaining);
+		}
+		
 		return direction;
 	}
 	
@@ -35,10 +44,12 @@ public class DisplayArray {
 	 */
 	public static boolean moreRemaining() {
 		if (remaining < 1) {
-			remaining = Options.TotalIterations;
+			if (HeadsUp.opts.debuggingDisplay()) {
+				System.out.println("Display iterations complete");
+			}
+			remaining = HeadsUp.opts.TotalIterations;
 			return false;
 		} else {
-			remaining--;
 			return true;
 		}
 	}
@@ -52,8 +63,9 @@ public class DisplayArray {
 			((location == (determineEyesInArray(Options.MaxX) - 1)) && (direction == 1))) {
 			location += toggleDirection();
 			
-			//I guess here would be the place for the other stim triggers, since we're
-			//bouncing here
+			/*
+			 * other stim triggers go here, until we've got better structure in the OO
+			 */
 			try {
 				if (!Options.StereoAudio) { 
 					HeadsUp.blonk.playTone(null);
@@ -62,7 +74,7 @@ public class DisplayArray {
 				} else {
 					HeadsUp.blonk.playTone(Options.StereoSide.RIGHT);
 				}
-			} catch (Exception ex) {
+			} catch (LineUnavailableException ex) {
 				System.err.println("Audio fucked up: " + ex.getMessage());
 			}
 			
@@ -120,7 +132,6 @@ public class DisplayArray {
 		return gc;
 	}
 	
-	//general methods
 	/**
 	 * This method is probably more for testing than anything else, at this point; it simply
 	 * fills in the eye pixels of all that will fit on the display bar (demo?).  This may
@@ -130,17 +141,17 @@ public class DisplayArray {
 	 * @return
 	 */
 	public static GraphicsContext initDisplay(GraphicsContext gc) {
-		if (Options.debugging) {
+		if (HeadsUp.opts.debuggingGen()) {
 			System.out.println("DBG: determineEyesInArray(" + Options.MaxX + ") = " + 
 				determineEyesInArray(Options.MaxX)); 
 		}
+		
 		for (int ouahX = 1; (ouahX * 50) <= (Options.MaxX - 25); ouahX++) {
 			//NOTE: fillRect(X (left inc), Y (down inc), width, height)
-			//draw our 25x25 block and skip to m' lou _HAIGH_
 			gc.setFill(Color.RED);
 			gc.fillRect((ouahX * 50), 50, Options.BoxMaxX, Options.BoxMaxY);
 			
-			if (Options.debugging) {
+			if (HeadsUp.opts.debuggingGen()) {
 				System.out.println("ouahX: " + ouahX);
 			}
 		}
