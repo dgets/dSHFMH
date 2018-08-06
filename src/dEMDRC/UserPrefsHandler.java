@@ -233,7 +233,7 @@ public class UserPrefsHandler implements EventHandler<ActionEvent> {
 					max = Integer.MAX_VALUE;
 					cur = 0;	//MyFgColor.getIntArgbPre();	//again, :-?(beep)
 					break;
-				case "Total Duration":
+				case "Session Duration":
 					min = 1;
 					max = 12;	//arbitrary; will need to look up medical data for EMDR for this value to be proper
 					cur = HeadsUp.uSet.customizedSettings.get(ouah);

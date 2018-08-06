@@ -60,7 +60,7 @@ public class Options {
 	public static enum StereoSide { LEFT, RIGHT };
 	public static enum ControlType { SLIDER, SPECTRUM, NUMERIC, TOGGLE, TEXT };
 	
-	public String[] optionText = { "Bar Width", "Bar Height", "Background Color", "Foreground Color", "Total Duration",
+	public String[] optionText = { "Bar Width", "Bar Height", "Background Color", "Foreground Color", "Session Duration",
 		    					   "Display Speed", "Beep", "Stereo Audio", "Tone Frequency", "Tone Duration" };
 	public ControlType[] optionControl = { ControlType.SLIDER, ControlType.SLIDER, ControlType.SPECTRUM,
 										   ControlType.SPECTRUM, ControlType.NUMERIC, ControlType.SLIDER,
@@ -82,7 +82,7 @@ public class Options {
 		if (debugging.get("testing") == 1) {
 			TotalIterations = 500;
 		} else {
-			TotalIterations = (HeadsUp.uSet.customizedSettings.get("Total Duration") * 60 * 
+			TotalIterations = (HeadsUp.uSet.customizedSettings.get("Session Duration") * 60 * 
 								(1000 / HeadsUp.uSet.customizedSettings.get("Display Speed")));
 		}
 	}
@@ -312,63 +312,6 @@ public class Options {
 					System.out.println("Set HeadsUp.uSet.customizedSettings to:\n" + HeadsUp.uSet.customizedSettings.toString());
 				}
 			}
-			
-			/*for (String ouah : optionText) {
-				min = -1; max = -1; cur = -1;
-				
-				//setting individual control specifics
-				switch (ouah) {
-					case "Bar Width":
-						min = 640;
-						max = MaxX;
-						cur = max;
-						break;
-					case "Bar Height":
-						min = (BoxMaxY * 3);
-						max = MaxY;
-						cur = max;
-						break;
-					case "Background Color":
-						min = 0;	//Color.BLACK.getIntArgbPre();	//not sure about this...
-						max = Integer.MAX_VALUE;
-						cur = 0;	//MyBgColor.getIntArgbPre();	//again, :-?(beep)
-						break;
-					case "Foreground Color":
-						min = 0;	//Color.BLACK.getIntArgbPre();	//not sure about this...
-						max = Integer.MAX_VALUE;
-						cur = 0;	//MyFgColor.getIntArgbPre();	//again, :-?(beep)
-						break;
-					case "Total Duration":
-						min = 1;
-						max = 12;	//arbitrary; will need to look up medical data for EMDR for this value to be proper
-						cur = SessionDurationInMin;
-						break;
-					case "Display Speed":
-						min = MinimumPauseInMS;
-						max = MaximumPauseInMS;
-						cur = DefaultPauseInMS;
-						break;
-					case "Beep":
-					case "Stereo Audio":
-						min = 0;
-						max = 1;
-						cur = 0;
-						break;
-					case "Tone Frequency":
-						min = MinAStimFreq;
-						max = MaxAStimFreq;
-						cur = AStimFreq;
-						break;
-					case "Tone Duration":
-						min = MinAStimDur;
-						max = MaxAStimDur;
-						cur = AStimDurInMS;
-						break;
-				}
-				
-				controlStruct.add(HeadsUp.userPrefsDisplay.new ControlGrid(ouah, optionControl[cntr++], min, max, cur));
-			}*/
-			
 			
 		}
 		
