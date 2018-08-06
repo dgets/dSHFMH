@@ -124,15 +124,15 @@ public class UserPrefsHandler implements EventHandler<ActionEvent> {
 	}
 	
 	//looks like we need a constructor heah
-	public UserPrefsHandler() {
+	/*public UserPrefsHandler() {
 		int cntr = 0;
 		int min, max, cur;
 		
 		for (String ouah : HeadsUp.opts.optionText) {
-			/*if (HeadsUp.opts.debuggingGen()) {
+			if (HeadsUp.opts.debuggingGen()) {
 				System.out.println("Populating UserPrefsHandler instance: " + ouah);
 				System.out.println("HeadsUp.uSet.customizedSettings.get(ouah): " + HeadsUp.uSet.customizedSettings.get(ouah));
-			}*/
+			}
 			min = -1; max = -1; cur = -1;
 			
 			//setting individual control specifics
@@ -185,14 +185,89 @@ public class UserPrefsHandler implements EventHandler<ActionEvent> {
 					break;
 			}
 			
+			if (HeadsUp.opts.debuggingGenTest()) {
+				System.out.print("Tossing into HeadsUp.userPrefsDisplay via new ControlGrid(): ");
+				System.out.println("HeadsUp.opts.optionControl[" + cntr + "]: " + HeadsUp.opts.optionControl[cntr].toString());
+				System.out.println("min: " + min + "\t\tmax: " + max + "\t\tcur: " + cur);
+			}
 			controlStruct.add(HeadsUp.userPrefsDisplay.new ControlGrid(ouah, HeadsUp.opts.optionControl[cntr++], min, max, cur));
 		}
-	}
+	}*/
 	
 	//general methods, detc
 	private void guhUpDown() {
 		HeadsUp.restoreInput();
 		userSetStage.close();
+	}
+	
+	public void init() {
+		int cntr = 0;
+		int min, max, cur;
+		
+		for (String ouah : HeadsUp.opts.optionText) {
+			if (HeadsUp.opts.debuggingGen()) {
+				System.out.println("Populating UserPrefsHandler instance: " + ouah);
+				System.out.println("HeadsUp.uSet.customizedSettings.get(ouah): " + HeadsUp.uSet.customizedSettings.get(ouah));
+			}
+			min = -1; max = -1; cur = -1;
+			
+			//setting individual control specifics
+			switch (ouah) {
+				case "Bar Width":
+					min = 640;
+					max = Options.MaxX;
+					cur = HeadsUp.uSet.customizedSettings.get(ouah);
+					break;
+				case "Bar Height":
+					min = (Options.BoxMaxY * 3);
+					max = Options.MaxY;
+					cur = HeadsUp.uSet.customizedSettings.get(ouah);
+					break;
+				case "Background Color":
+					min = 0;	//Color.BLACK.getIntArgbPre();	//not sure about this...
+					max = Integer.MAX_VALUE;
+					cur = 0;	//MyBgColor.getIntArgbPre();	//again, :-?(beep)
+					break;
+				case "Foreground Color":
+					min = 0;	//Color.BLACK.getIntArgbPre();	//not sure about this...
+					max = Integer.MAX_VALUE;
+					cur = 0;	//MyFgColor.getIntArgbPre();	//again, :-?(beep)
+					break;
+				case "Total Duration":
+					min = 1;
+					max = 12;	//arbitrary; will need to look up medical data for EMDR for this value to be proper
+					cur = HeadsUp.uSet.customizedSettings.get(ouah);
+					break;
+				case "Display Speed":
+					min = Options.MinimumPauseInMS;
+					max = Options.MaximumPauseInMS;
+					cur = HeadsUp.uSet.customizedSettings.get(ouah);
+					break;
+				case "Beep":
+				case "Stereo Audio":
+					min = 0;
+					max = 1;
+					cur = 0;
+					break;
+				case "Tone Frequency":
+					min = Options.MinAStimFreq;
+					max = Options.MaxAStimFreq;
+					cur = HeadsUp.uSet.customizedSettings.get(ouah);
+					break;
+				case "Tone Duration":
+					min = Options.MinAStimDur;
+					max = Options.MaxAStimDur;
+					cur = HeadsUp.uSet.customizedSettings.get(ouah);
+					break;
+			}
+			
+			if (HeadsUp.opts.debuggingGenTest()) {
+				System.out.print("Tossing into HeadsUp.userPrefsDisplay via new ControlGrid(): ");
+				System.out.println("HeadsUp.opts.optionControl[" + cntr + "]: " + HeadsUp.opts.optionControl[cntr].toString());
+				System.out.println("min: " + min + "\t\tmax: " + max + "\t\tcur: " + cur + "\n");
+			}
+			controlStruct.add(HeadsUp.userPrefsDisplay.new ControlGrid(ouah, HeadsUp.opts.optionControl[cntr++], min, max, cur));
+		}
 	}
 	
 	//'regular' subclasses

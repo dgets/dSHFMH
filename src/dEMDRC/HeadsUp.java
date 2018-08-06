@@ -81,7 +81,9 @@ public class HeadsUp extends Application {
 		//uSet.loadXMLSettings();
 		
 		toggleActive.setOnAction(new ToggleKitt());
-		goUserPrefs.setOnAction(userPrefsDisplay = new UserPrefsHandler());	//needs to be after XML is loaded (above block?)
+		userPrefsDisplay = new UserPrefsHandler();
+		userPrefsDisplay.init();
+		goUserPrefs.setOnAction(userPrefsDisplay /*= new UserPrefsHandler()*/);	//needs to be after XML is loaded (above block?)
 		
 		gmt = new Timer();
 		
