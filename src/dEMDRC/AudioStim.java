@@ -14,7 +14,7 @@ public class AudioStim {
 	public AudioStim() {
 		bufferLength = (int)((Options.AStimDurInMS * Options.ASampleRate) / 1000);
 		
-		if (HeadsUp.uSet.customizedSettings.get("StereoAudio") < 2) { 
+		if (HeadsUp.uSet.customizedSettings.get("Stereo Audio") < 2) { 
 			monoToneBuffer = new byte[bufferLength];
 		} else {
 			bufferLength *= 2;	//ouah ouah ouah
@@ -36,7 +36,7 @@ public class AudioStim {
 		
 		for (int ouah = 0; ouah < bufferLength; ouah += 2) {
 			double angle = 2.0 * Math.PI * (ouah / period);	//yeah, I'm retentive like that
-			if (HeadsUp.uSet.customizedSettings.get("StereoAudio") < 2) { 
+			if (HeadsUp.uSet.customizedSettings.get("Stereo Audio") < 2) { 
 				monoToneBuffer[ouah] = (byte)(Math.sin(angle) * 127f);	//wut?
 			} else {
 				short nakk = (short)(Math.sin(angle) * 32767);		//not sure about this const value
@@ -64,7 +64,7 @@ public class AudioStim {
 		
 		//I'm thinking that the AudioFormat & SourceDataLine should probably be set up beforehand in order to decrease
 		//latency as much as possible during operations
-		if (HeadsUp.uSet.customizedSettings.get("StereoAudio") < 2) { 
+		if (HeadsUp.uSet.customizedSettings.get("Stereo Audio") < 2) { 
 			af = new AudioFormat(Options.ASampleRate, 8, 1, true, true);
 		} else {
 			af = new AudioFormat(Options.ASampleRate, 16, 2, true, false);
@@ -75,7 +75,7 @@ public class AudioStim {
 		line.open(af, Options.ASampleRate);
 		line.start();
 		
-		if (HeadsUp.uSet.customizedSettings.get("StereoAudio") < 2) {  
+		if (HeadsUp.uSet.customizedSettings.get("Stereo Audio") < 2) {  
 			line.write(monoToneBuffer, 0, bufferLength);
 		} else if (handed == Options.StereoSide.RIGHT) {
 			line.write(rightStereoToneBuffer, 0, (bufferLength * 2));
