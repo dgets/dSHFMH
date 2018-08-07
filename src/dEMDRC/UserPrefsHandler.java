@@ -1,13 +1,10 @@
 package dEMDRC;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
 import dEMDRC.Options.ControlType;
-import dEMDRC.UserPrefsHandler.ControlGrid;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.AccessibleRole;
@@ -45,7 +42,7 @@ public class UserPrefsHandler implements EventHandler<ActionEvent> {
 		lblValue.setStyle("-fx-font-weight: bold;");
 		
 		//these should be bundled; durrrr
-		HeadsUp.togglePause();
+		//HeadsUp.togglePause();	- significant issues to be fixed with this
 		HeadsUp.blockInput();
 		
 		int cntr = 2;
@@ -123,77 +120,6 @@ public class UserPrefsHandler implements EventHandler<ActionEvent> {
 		this.worldY = y;
 	}
 	
-	//looks like we need a constructor heah
-	/*public UserPrefsHandler() {
-		int cntr = 0;
-		int min, max, cur;
-		
-		for (String ouah : HeadsUp.opts.optionText) {
-			if (HeadsUp.opts.debuggingGen()) {
-				System.out.println("Populating UserPrefsHandler instance: " + ouah);
-				System.out.println("HeadsUp.uSet.customizedSettings.get(ouah): " + HeadsUp.uSet.customizedSettings.get(ouah));
-			}
-			min = -1; max = -1; cur = -1;
-			
-			//setting individual control specifics
-			switch (ouah) {
-				case "Bar Width":
-					min = 640;
-					max = Options.MaxX;
-					cur = HeadsUp.uSet.customizedSettings.get(ouah);
-					break;
-				case "Bar Height":
-					min = (Options.BoxMaxY * 3);
-					max = Options.MaxY;
-					cur = HeadsUp.uSet.customizedSettings.get(ouah);
-					break;
-				case "Background Color":
-					min = 0;	//Color.BLACK.getIntArgbPre();	//not sure about this...
-					max = Integer.MAX_VALUE;
-					cur = 0;	//MyBgColor.getIntArgbPre();	//again, :-?(beep)
-					break;
-				case "Foreground Color":
-					min = 0;	//Color.BLACK.getIntArgbPre();	//not sure about this...
-					max = Integer.MAX_VALUE;
-					cur = 0;	//MyFgColor.getIntArgbPre();	//again, :-?(beep)
-					break;
-				case "Total Duration":
-					min = 1;
-					max = 12;	//arbitrary; will need to look up medical data for EMDR for this value to be proper
-					cur = HeadsUp.uSet.customizedSettings.get(ouah);
-					break;
-				case "Display Speed":
-					min = Options.MinimumPauseInMS;
-					max = Options.MaximumPauseInMS;
-					cur = HeadsUp.uSet.customizedSettings.get(ouah);
-					break;
-				case "Beep":
-				case "Stereo Audio":
-					min = 0;
-					max = 1;
-					cur = 0;
-					break;
-				case "Tone Frequency":
-					min = Options.MinAStimFreq;
-					max = Options.MaxAStimFreq;
-					cur = HeadsUp.uSet.customizedSettings.get(ouah);
-					break;
-				case "Tone Duration":
-					min = Options.MinAStimDur;
-					max = Options.MaxAStimDur;
-					cur = HeadsUp.uSet.customizedSettings.get(ouah);
-					break;
-			}
-			
-			if (HeadsUp.opts.debuggingGenTest()) {
-				System.out.print("Tossing into HeadsUp.userPrefsDisplay via new ControlGrid(): ");
-				System.out.println("HeadsUp.opts.optionControl[" + cntr + "]: " + HeadsUp.opts.optionControl[cntr].toString());
-				System.out.println("min: " + min + "\t\tmax: " + max + "\t\tcur: " + cur);
-			}
-			controlStruct.add(HeadsUp.userPrefsDisplay.new ControlGrid(ouah, HeadsUp.opts.optionControl[cntr++], min, max, cur));
-		}
-	}*/
-	
 	//general methods, detc
 	private void guhUpDown() {
 		HeadsUp.restoreInput();
@@ -226,12 +152,12 @@ public class UserPrefsHandler implements EventHandler<ActionEvent> {
 				case "Background Color":
 					min = 0;	//Color.BLACK.getIntArgbPre();	//not sure about this...
 					max = Integer.MAX_VALUE;
-					cur = 0;	//MyBgColor.getIntArgbPre();	//again, :-?(beep)
+					cur = 0;	//MyBgColor.getIntArgbPre();	//see issue #11 regarding this crap
 					break;
 				case "Foreground Color":
-					min = 0;	//Color.BLACK.getIntArgbPre();	//not sure about this...
+					min = 0;	//Color.BLACK.getIntArgbPre();	//ditto
 					max = Integer.MAX_VALUE;
-					cur = 0;	//MyFgColor.getIntArgbPre();	//again, :-?(beep)
+					cur = 0;	//MyFgColor.getIntArgbPre();	//ditto
 					break;
 				case "Session Duration":
 					min = 1;
@@ -338,21 +264,19 @@ public class UserPrefsHandler implements EventHandler<ActionEvent> {
 		@Override
 		public void handle(ActionEvent arg0) {
 			try {
-				//first we need to set up everything in HeadsUp.uSet, etc
-				//what the hell was I talking about there?
 				//now we can save it -- switching to XML
 				//doSave();
 				doXMLSave();
 			} catch (Exception ex) {
 				System.err.println(ex.getMessage());
 			}
-			HeadsUp.togglePause();
+			//HeadsUp.gc.togglePause();
 			guhUpDown();
 		}
 		
 		private void doXMLSave() throws Exception {
 			//WHY do we need to populate first?  This isn't handled right...
-			populateSettings();
+			//populateSettings();
 			
 			File uSettings = new File(HeadsUp.uSet.settingsPath);
 			if (uSettings.exists()) {
@@ -360,6 +284,7 @@ public class UserPrefsHandler implements EventHandler<ActionEvent> {
 				resetSaveFile(uSettings);
 			}
 			
+			populateSettings();
 			HeadsUp.uSet.saveXMLSettings();
 		}
 		
@@ -433,9 +358,9 @@ public class UserPrefsHandler implements EventHandler<ActionEvent> {
 			
 			for (int cntr = 3; cntr < HeadsUp.userPrefsDisplay.userSettingsGrid.getChildren().size(); cntr++) {
 				ctrlRole = HeadsUp.userPrefsDisplay.userSettingsGrid.getChildren().get(cntr).getAccessibleRole();
-				/*if (HeadsUp.opts.debuggingTest()) {
+				if (HeadsUp.opts.debuggingTest()) {
 					System.out.println(cntr + " role: " + ctrlRole);				
-				}*/
+				}
 				
 				tmpNode = HeadsUp.userPrefsDisplay.userSettingsGrid.getChildren().get(cntr);
 				switch (ctrlRole) {
@@ -477,9 +402,6 @@ public class UserPrefsHandler implements EventHandler<ActionEvent> {
 				
 				if ((cntr % 2) == 0) {
 					switch (tmpControlType) {
-						case TEXT:
-							//invalid, continue
-							continue;
 						case SLIDER:
 							HeadsUp.uSet.customizedSettings.put(tmpName, (int)Double.parseDouble(tmpBlurb));
 							break;
@@ -495,8 +417,11 @@ public class UserPrefsHandler implements EventHandler<ActionEvent> {
 							} else {
 								HeadsUp.uSet.customizedSettings.put(tmpName, 1);
 							}
-						case SPECTRUM:	//UNIMPLEMENTED CURRENTLY
+						case SPECTRUM:	//UNIMPLEMENTED CURRENTLY - will be the results of a color picker
 							break;
+						default:
+							System.err.println("Invalid control data found in UserPrefsHandler.SaveNExit.populateSettings()");
+							throw new Exception("Invalid control data");
 					}
 					
 					if (HeadsUp.opts.debuggingTest()) {
@@ -538,7 +463,7 @@ public class UserPrefsHandler implements EventHandler<ActionEvent> {
 		public void handle(ActionEvent arg0) {
 			//TODO moar than testing code, detc
 			//erm, actually this may be all that we need for the 'AbandonNExit' button handler
-			HeadsUp.togglePause();
+			//HeadsUp.togglePause(); - significant issues
 			guhUpDown();
 		}
 		

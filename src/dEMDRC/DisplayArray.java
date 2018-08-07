@@ -159,6 +159,26 @@ public class DisplayArray {
 		return gc;
 	}
 	
+	public static void pauseToggle() {
+		//significant issues in this implementation; gmt has to be notified from within the HeadsUp object itself, 
+		//plus other logic issues (ie exception catching) here -- leaving this as a nonfunctional stub right now
+		return;	//remove this when crapola is fixed
+		
+		/*if (DisplayArray.paused) {
+			HeadsUp.gmt.notify();
+		} else {
+			try {
+				HeadsUp.gmt.wait();
+			} catch (InterruptedException ex) {
+				System.err.println("Issue asking gmt scheduler to wait!\nMsg: " + ex.getMessage());
+			} catch (Exception ex) {
+				System.err.println("Unknown error asking gmt scheduler to wait!\nMsg: " + ex.getMessage());
+			}
+		}
+		
+		DisplayArray.paused = !DisplayArray.paused;*/
+	}
+	
 	/**
 	 * Method returns the number of eyes that will fit in the given display bar
 	 * 

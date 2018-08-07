@@ -9,9 +9,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.sun.prism.paint.Color;
@@ -194,12 +192,16 @@ public class Options {
 			HeadsUp.uSet.customizedSettings = (HashMap<String, Integer>)decoder.readObject();
 			if (debuggingFileIO()) {
 				System.out.println("loadXMLSettings:" + /*ouahful:\t" + ouahful.toString() +*/ 
-								   "\nHeadsUp.uSet.customizedSettings:\t" + HeadsUp.uSet.customizedSettings.toString());
+								   "\nHeadsUp.uSet.customizedSettings:\t" + HeadsUp.uSet.customizedSettings.toString() + "\n");
 			}
 		}
 		
 		public void saveXMLSettings() {
 			XMLEncoder encoder = null;
+			
+			if (debuggingFileIO()) {
+				System.out.println("Entered Options.UserSet.saveXMLSettings()");
+			}
 			
 			try {
 				encoder = new XMLEncoder(new BufferedOutputStream(new FileOutputStream(settingsPath)));
