@@ -356,6 +356,7 @@ public class UserPrefsHandler implements EventHandler<ActionEvent> {
 				System.out.println("\nUserPrefsDisplay.populateSettings\n-=-=-=-=-");
 			}
 			
+			//ffs just recode this loop, it got all messed up at some point
 			for (int cntr = 3; cntr < HeadsUp.userPrefsDisplay.userSettingsGrid.getChildren().size(); cntr++) {
 				ctrlRole = HeadsUp.userPrefsDisplay.userSettingsGrid.getChildren().get(cntr).getAccessibleRole();
 				if (HeadsUp.opts.debuggingTest()) {
@@ -400,7 +401,7 @@ public class UserPrefsHandler implements EventHandler<ActionEvent> {
 					System.out.println("Role allows us to grab: " + tmpBlurb);
 				}
 				
-				if ((cntr % 2) == 0) {
+				if ((cntr % 2) == 1) {
 					switch (tmpControlType) {
 						case SLIDER:
 							HeadsUp.uSet.customizedSettings.put(tmpName, (int)Double.parseDouble(tmpBlurb));
@@ -420,8 +421,14 @@ public class UserPrefsHandler implements EventHandler<ActionEvent> {
 						case SPECTRUM:	//UNIMPLEMENTED CURRENTLY - will be the results of a color picker
 							break;
 						default:
-							System.err.println("Invalid control data found in UserPrefsHandler.SaveNExit.populateSettings()");
-							throw new Exception("Invalid control data");
+							if (tmpBlurb.contains("In Progress")) {
+								System.out.println("Skipping " + tmpName + " parsing (in progress); inserting 0");
+								
+								HeadsUp.uSet.customizedSettings.put(tmpName, 0);
+							} else {
+								System.err.println("Invalid control data found in UserPrefsHandler.SaveNExit.populateSettings()");
+								throw new Exception("Invalid control data");
+							}
 					}
 					
 					if (HeadsUp.opts.debuggingTest()) {
