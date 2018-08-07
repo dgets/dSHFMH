@@ -153,6 +153,13 @@ public class Options {
 				
 				//set to defaults, or remain there, and run along
 				
+			} else if (uSettings.length() == 0) {
+				//corrupt
+				if (debuggingTest()) {
+					System.out.println(" -=* .dEMDR.xml has zero length!?! (wiping)*=-");
+				}
+				
+				uSettings.delete();
 			} else {
 				foundUserSettings = true;		//I'm really starting to think that we don't need this variable
 				try {
