@@ -74,7 +74,7 @@ public class Options {
 		debugging.put("general", 1);
 		debugging.put("testing", 1);
 		debugging.put("fileio", 1);
-		debugging.put("display", 1);
+		debugging.put("display", 0);
 		
 		//yeah this is redundant.  fuggoff
 		if (debugging.get("testing") == 1) {
