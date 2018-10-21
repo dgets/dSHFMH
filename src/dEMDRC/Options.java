@@ -9,9 +9,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.sun.prism.paint.Color;
@@ -76,7 +74,7 @@ public class Options {
 		debugging.put("general", 1);
 		debugging.put("testing", 1);
 		debugging.put("fileio", 1);
-		debugging.put("display", 1);
+		debugging.put("display", 0);
 		
 		//yeah this is redundant.  fuggoff
 		if (debugging.get("testing") == 1) {
@@ -155,6 +153,13 @@ public class Options {
 				
 				//set to defaults, or remain there, and run along
 				
+			} else if (uSettings.length() == 0) {
+				//corrupt
+				if (debuggingTest()) {
+					System.out.println(" -=* .dEMDR.xml has zero length!?! (wiping)*=-");
+				}
+				
+				uSettings.delete();
 			} else {
 				foundUserSettings = true;		//I'm really starting to think that we don't need this variable
 				try {
@@ -194,12 +199,16 @@ public class Options {
 			HeadsUp.uSet.customizedSettings = (HashMap<String, Integer>)decoder.readObject();
 			if (debuggingFileIO()) {
 				System.out.println("loadXMLSettings:" + /*ouahful:\t" + ouahful.toString() +*/ 
-								   "\nHeadsUp.uSet.customizedSettings:\t" + HeadsUp.uSet.customizedSettings.toString());
+								   "\nHeadsUp.uSet.customizedSettings:\t" + HeadsUp.uSet.customizedSettings.toString() + "\n");
 			}
 		}
 		
 		public void saveXMLSettings() {
 			XMLEncoder encoder = null;
+			
+			if (debuggingFileIO()) {
+				System.out.println("Entered Options.UserSet.saveXMLSettings()");
+			}
 			
 			try {
 				encoder = new XMLEncoder(new BufferedOutputStream(new FileOutputStream(settingsPath)));

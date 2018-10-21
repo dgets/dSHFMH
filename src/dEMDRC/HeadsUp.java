@@ -99,22 +99,6 @@ public class HeadsUp extends Application {
 		userPrefsDisplay.setWorldXY(world.getX(), world.getY());	//working?
 	}
 	
-	public static void togglePause() {
-		if (DisplayArray.paused) {
-			HeadsUp.gmt.notify();
-		} else {
-			try {
-				HeadsUp.gmt.wait();
-			} catch (InterruptedException ex) {
-				System.err.println("Issue asking gmt scheduler to wait!\nMsg: " + ex.getMessage());
-			} catch (Exception ex) {
-				System.err.println("Unknown error asking gmt scheduler to wait!\nMsg: " + ex.getMessage());
-			}
-		}
-		
-		DisplayArray.paused = !DisplayArray.paused;
-	}
-	
 	/**
 	 * Method is just a wrapper to return adjustSpeed's value without exposing the whole widget
 	 * 

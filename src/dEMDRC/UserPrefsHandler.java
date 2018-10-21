@@ -1,13 +1,10 @@
 package dEMDRC;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
 import dEMDRC.Options.ControlType;
-import dEMDRC.UserPrefsHandler.ControlGrid;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.AccessibleRole;
@@ -45,7 +42,7 @@ public class UserPrefsHandler implements EventHandler<ActionEvent> {
 		lblValue.setStyle("-fx-font-weight: bold;");
 		
 		//these should be bundled; durrrr
-		HeadsUp.togglePause();
+		//HeadsUp.togglePause();	- significant issues to be fixed with this
 		HeadsUp.blockInput();
 		
 		int cntr = 2;
@@ -123,77 +120,6 @@ public class UserPrefsHandler implements EventHandler<ActionEvent> {
 		this.worldY = y;
 	}
 	
-	//looks like we need a constructor heah
-	/*public UserPrefsHandler() {
-		int cntr = 0;
-		int min, max, cur;
-		
-		for (String ouah : HeadsUp.opts.optionText) {
-			if (HeadsUp.opts.debuggingGen()) {
-				System.out.println("Populating UserPrefsHandler instance: " + ouah);
-				System.out.println("HeadsUp.uSet.customizedSettings.get(ouah): " + HeadsUp.uSet.customizedSettings.get(ouah));
-			}
-			min = -1; max = -1; cur = -1;
-			
-			//setting individual control specifics
-			switch (ouah) {
-				case "Bar Width":
-					min = 640;
-					max = Options.MaxX;
-					cur = HeadsUp.uSet.customizedSettings.get(ouah);
-					break;
-				case "Bar Height":
-					min = (Options.BoxMaxY * 3);
-					max = Options.MaxY;
-					cur = HeadsUp.uSet.customizedSettings.get(ouah);
-					break;
-				case "Background Color":
-					min = 0;	//Color.BLACK.getIntArgbPre();	//not sure about this...
-					max = Integer.MAX_VALUE;
-					cur = 0;	//MyBgColor.getIntArgbPre();	//again, :-?(beep)
-					break;
-				case "Foreground Color":
-					min = 0;	//Color.BLACK.getIntArgbPre();	//not sure about this...
-					max = Integer.MAX_VALUE;
-					cur = 0;	//MyFgColor.getIntArgbPre();	//again, :-?(beep)
-					break;
-				case "Total Duration":
-					min = 1;
-					max = 12;	//arbitrary; will need to look up medical data for EMDR for this value to be proper
-					cur = HeadsUp.uSet.customizedSettings.get(ouah);
-					break;
-				case "Display Speed":
-					min = Options.MinimumPauseInMS;
-					max = Options.MaximumPauseInMS;
-					cur = HeadsUp.uSet.customizedSettings.get(ouah);
-					break;
-				case "Beep":
-				case "Stereo Audio":
-					min = 0;
-					max = 1;
-					cur = 0;
-					break;
-				case "Tone Frequency":
-					min = Options.MinAStimFreq;
-					max = Options.MaxAStimFreq;
-					cur = HeadsUp.uSet.customizedSettings.get(ouah);
-					break;
-				case "Tone Duration":
-					min = Options.MinAStimDur;
-					max = Options.MaxAStimDur;
-					cur = HeadsUp.uSet.customizedSettings.get(ouah);
-					break;
-			}
-			
-			if (HeadsUp.opts.debuggingGenTest()) {
-				System.out.print("Tossing into HeadsUp.userPrefsDisplay via new ControlGrid(): ");
-				System.out.println("HeadsUp.opts.optionControl[" + cntr + "]: " + HeadsUp.opts.optionControl[cntr].toString());
-				System.out.println("min: " + min + "\t\tmax: " + max + "\t\tcur: " + cur);
-			}
-			controlStruct.add(HeadsUp.userPrefsDisplay.new ControlGrid(ouah, HeadsUp.opts.optionControl[cntr++], min, max, cur));
-		}
-	}*/
-	
 	//general methods, detc
 	private void guhUpDown() {
 		HeadsUp.restoreInput();
@@ -226,12 +152,12 @@ public class UserPrefsHandler implements EventHandler<ActionEvent> {
 				case "Background Color":
 					min = 0;	//Color.BLACK.getIntArgbPre();	//not sure about this...
 					max = Integer.MAX_VALUE;
-					cur = 0;	//MyBgColor.getIntArgbPre();	//again, :-?(beep)
+					cur = 0;	//MyBgColor.getIntArgbPre();	//see issue #11 regarding this crap
 					break;
 				case "Foreground Color":
-					min = 0;	//Color.BLACK.getIntArgbPre();	//not sure about this...
+					min = 0;	//Color.BLACK.getIntArgbPre();	//ditto
 					max = Integer.MAX_VALUE;
-					cur = 0;	//MyFgColor.getIntArgbPre();	//again, :-?(beep)
+					cur = 0;	//MyFgColor.getIntArgbPre();	//ditto
 					break;
 				case "Session Duration":
 					min = 1;
@@ -338,21 +264,19 @@ public class UserPrefsHandler implements EventHandler<ActionEvent> {
 		@Override
 		public void handle(ActionEvent arg0) {
 			try {
-				//first we need to set up everything in HeadsUp.uSet, etc
-				//what the hell was I talking about there?
 				//now we can save it -- switching to XML
 				//doSave();
 				doXMLSave();
 			} catch (Exception ex) {
 				System.err.println(ex.getMessage());
 			}
-			HeadsUp.togglePause();
+			//HeadsUp.gc.togglePause();
 			guhUpDown();
 		}
 		
 		private void doXMLSave() throws Exception {
 			//WHY do we need to populate first?  This isn't handled right...
-			populateSettings();
+			//populateSettings();
 			
 			File uSettings = new File(HeadsUp.uSet.settingsPath);
 			if (uSettings.exists()) {
@@ -360,6 +284,7 @@ public class UserPrefsHandler implements EventHandler<ActionEvent> {
 				resetSaveFile(uSettings);
 			}
 			
+			populateSettings();
 			HeadsUp.uSet.saveXMLSettings();
 		}
 		
@@ -428,21 +353,36 @@ public class UserPrefsHandler implements EventHandler<ActionEvent> {
 			Node tmpNode = null;
 			
 			if (HeadsUp.opts.debuggingTest()) {
-				System.out.println("\nUserPrefsDisplay.populateSettings\n-=-=-=-=-");
+				System.out.println("\nUserPrefsDisplay.populateSettings\n-=-=-=-=-\n");
 			}
+
+			//here's the loop that we messed up so badly before
 			
-			for (int cntr = 3; cntr < HeadsUp.userPrefsDisplay.userSettingsGrid.getChildren().size(); cntr++) {
-				ctrlRole = HeadsUp.userPrefsDisplay.userSettingsGrid.getChildren().get(cntr).getAccessibleRole();
-				/*if (HeadsUp.opts.debuggingTest()) {
-					System.out.println(cntr + " role: " + ctrlRole);				
-				}*/
+			for (int cntr = 2; cntr < HeadsUp.userPrefsDisplay.userSettingsGrid.getChildren().size(); cntr += 2) {			
+				if (HeadsUp.opts.debuggingGenTest()){
+					System.out.println("populateSettings():");
+				}
+				if (HeadsUp.opts.debuggingGenTest() && 
+					(HeadsUp.userPrefsDisplay.userSettingsGrid.getChildren().get(cntr).getAccessibleRole() != 
+					 javafx.scene.AccessibleRole.TEXT)) {
+					System.err.println("  * Node #" + cntr + " is not in a valid (TEXT) role");
+					throw new Exception ("populateSettings() error: found invalid role");
+				}
 				
-				tmpNode = HeadsUp.userPrefsDisplay.userSettingsGrid.getChildren().get(cntr);
+				tmpName = ((Label)HeadsUp.userPrefsDisplay.userSettingsGrid.getChildren().get(cntr)).getText();		//name
+				tmpNode = HeadsUp.userPrefsDisplay.userSettingsGrid.getChildren().get(cntr + 1);					//data
+				ctrlRole = tmpNode.getAccessibleRole();		//role (for accessing the data properly)
+
+				if (HeadsUp.opts.debuggingGenTest()) {
+					System.out.println("  * working with: " + tmpName + "\t\tand its following Node object (" + ctrlRole + ")");
+				}
+				
 				switch (ctrlRole) {
 					case TEXT:
-						tmpBlurb = ((Label)tmpNode).getText();
-						tmpName = tmpBlurb;
-						tmpControlType = Options.ControlType.TEXT;
+						//NOTE: In reworking the loop, we should already have this information
+						//tmpBlurb = ((Label)tmpNode).getText();
+						//tmpName = tmpBlurb;
+						//tmpControlType = Options.ControlType.TEXT;
 						break;
 					case SLIDER:
 						tmpBlurb = Integer.toString((int)((Slider)tmpNode).getValue());
@@ -450,7 +390,7 @@ public class UserPrefsHandler implements EventHandler<ActionEvent> {
 						break;
 					case TEXT_FIELD:
 						tmpBlurb = ((TextField)tmpNode).getText();
-						tmpControlType = Options.ControlType.TEXT;
+						tmpControlType = Options.ControlType.NUMERIC;
 						break;
 					case CHECK_BOX:
 						if (((CheckBox)tmpNode).isSelected()) {
@@ -462,74 +402,62 @@ public class UserPrefsHandler implements EventHandler<ActionEvent> {
 						break;
 					case BUTTON:
 						if (HeadsUp.opts.debuggingGenTest()) {
-							System.out.println("Skipping entry for a [non-setting] Node (in this case a Button class)");
+							System.out.println("  * skipping entry for a [non-setting] Node (in this case a Button class)");
 						}
-						
+					
 						cntr++;
 						continue;	//actually unless we change more on the form, buttons mean it's not a setting, it's form end
 					default:
 						tmpBlurb = "Shit's just all fucked";
 				}
-				
+
 				if (HeadsUp.opts.debuggingGenTest()) {
-					System.out.println("Role allows us to grab: " + tmpBlurb);
+					System.out.println("  * previously had: " + HeadsUp.uSet.customizedSettings.get(tmpName) + "\t\tfor: " + tmpName);
+					System.out.println("  * grabbing: " + tmpBlurb + "\t\tfor: " + tmpName);
 				}
 				
-				if ((cntr % 2) == 0) {
-					switch (tmpControlType) {
-						case TEXT:
-							//invalid, continue
-							continue;
-						case SLIDER:
-							HeadsUp.uSet.customizedSettings.put(tmpName, (int)Double.parseDouble(tmpBlurb));
-							break;
-						case NUMERIC:	//this is actually a TEXT_FIELD
-							HeadsUp.uSet.customizedSettings.put(tmpName, Integer.parseInt(tmpBlurb));
-							break;
-						case TOGGLE:	//actually a CHECKBOX
-							if ((Integer.parseInt(tmpBlurb) < 0) || (Integer.parseInt(tmpBlurb) > 1)) {
-								System.err.println("* Weird error trying to determine a checkbox/toggle value");
-								throw new Exception("Error parsing toggle value");
-							} else if (Integer.parseInt(tmpBlurb) == 0) {
-								HeadsUp.uSet.customizedSettings.put(tmpName, 0);
-							} else {
-								HeadsUp.uSet.customizedSettings.put(tmpName, 1);
-							}
-						case SPECTRUM:	//UNIMPLEMENTED CURRENTLY
-							break;
-					}
-					
-					if (HeadsUp.opts.debuggingTest()) {
-						System.out.println("Changed setting: " + tmpName + " to value: " + tmpBlurb);
-					}
-				}
-			}
-		}
-		
-		/**
-		 * Method will step through userSettingsGrid's kiddos, putting together a HashMap of the relevant shit for populateSettings()
-		 * 
-		 * I shamelessly stole this code from StackOverflow; can't say I like the algorithm much, though
-		 * 
-		 * @return HashMap<String, Integer>
-		 */
-		//@SuppressWarnings("deprecation")
-		/*private HashMap<String, Integer> pullFromGrid() {
-			HashMap<String, Integer> formData = new HashMap<String, Integer>();
-			Object tmpClass = null;
-					
-			for (int x = 0; x < HeadsUp.userPrefsDisplay.userSettingsGrid.impl_getColumnCount(); x++) {
-				for (int y = 0; y < HeadsUp.userPrefsDisplay.userSettingsGrid.impl_getRowCount(); y++) {
-					for (Node ouah : HeadsUp.userPrefsDisplay.userSettingsGrid.getChildren()) {
-						if ((GridPane.getColumnIndex(ouah) == x) && (GridPane.getRowIndex(ouah) == y)) {
-							int curX, curY;
-							
-							//if Class. ouah.;	//I don't think this is what I wanted it to be
+				switch (tmpControlType) {
+					case SLIDER:
+						HeadsUp.uSet.customizedSettings.put(tmpName, (int)Double.parseDouble(tmpBlurb));
+						break;
+					case NUMERIC:	//this is actually a TEXT_FIELD
+						HeadsUp.uSet.customizedSettings.put(tmpName, Integer.parseInt(tmpBlurb));
+						break;
+					case TOGGLE:	//actually a CHECKBOX
+						if ((Integer.parseInt(tmpBlurb) < 0) || (Integer.parseInt(tmpBlurb) > 1)) {
+							System.err.println("* Weird error trying to determine a checkbox/toggle value");
+							throw new Exception("Error parsing toggle value");
+						} else if (Integer.parseInt(tmpBlurb) == 0) {
+							//HeadsUp.uSet.customizedSettings.put(tmpName, 0);
+							tmpBlurb = "0";
+						} else {
+							//HeadsUp.uSet.customizedSettings.put(tmpName, 1);
+							tmpBlurb = "1";
 						}
-					}
+					case SPECTRUM:	//UNIMPLEMENTED CURRENTLY - will be the results of a color picker
+						break;
+					default:
+						if (tmpName.contains("In Progress") || tmpBlurb.contains("In Progress")) {
+							System.out.println("Skipping " + tmpName + " parsing (in progress); inserting 0");
+						
+							//HeadsUp.uSet.customizedSettings.put(tmpName, 0);
+							tmpBlurb = "0";
+						} else {
+							System.err.println("Invalid control data found in UserPrefsHandler.SaveNExit.populateSettings()");
+							throw new Exception("Invalid control data - tmpName: " + tmpName + "\t\ttmpBlurb: " + tmpBlurb);
+						}
 				}
+				
+				if (HeadsUp.opts.debuggingGen()) {
+					System.out.println("  * setting: " + tmpName + "\t\tfrom: " + HeadsUp.uSet.customizedSettings.get(tmpName) + 
+						"\t\tto: " + tmpBlurb);
+				}
+				
+				HeadsUp.uSet.customizedSettings.put(tmpName, Integer.parseInt(tmpBlurb));
+				
 			}
-		}*/
+			
+		}
 	}
 	
 	private class AbandonNExit implements EventHandler<ActionEvent> {
@@ -538,7 +466,7 @@ public class UserPrefsHandler implements EventHandler<ActionEvent> {
 		public void handle(ActionEvent arg0) {
 			//TODO moar than testing code, detc
 			//erm, actually this may be all that we need for the 'AbandonNExit' button handler
-			HeadsUp.togglePause();
+			//HeadsUp.togglePause(); - significant issues
 			guhUpDown();
 		}
 		
