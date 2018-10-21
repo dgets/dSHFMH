@@ -5,8 +5,7 @@
 ### Integral Concepts
 
 In order to understand this project, you need to be familiar with **EMDR**
-therapy, which is used with remarkable effectiveness in treating **PTSD**.  
-The acronym stands for _Eye Movement Desensitization and Reprocessing_.
+therapy, which is used with remarkable effectiveness in treating **PTSD**.  The acronym stands for _Eye Movement Desensitization and Reprocessing_.
 
   * [What is EMDR?](http://www.emdr.com/what-is-emdr/); from www.EMDR.com
   * [What is the EMDR session actually like?](https://emdria.site-ym.com/page/120); via EMDRia.site-ym.com
