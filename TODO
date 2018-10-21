@@ -1,0 +1,34 @@
+It really sucks having to use a text file for this stuff when I'm used to
+using GitHub & GitLab with their issues tracking features.  :(  I hope I can
+afford internet again soon.
+
+Remaining
+-=-=-=-=-
+16 Jul 18
+* reimplement OO structure for more sanity (or, barring that...)
+* learn & implement junit testing
+* set the display to pause when the user preferences window comes up
+* start utilizing task manager in eclipse until net access is back
+
+17 Jul 18
+* switch to utilizing 3 integers (min, max, & cur) in the saved data for the
+  default Color objects as one each of RGB; this will save us from having to
+  complicate the data structure further right now, though that's what I'm sure
+  we'll end up having to do for best maintainability purposes
+
+Completed or Void
+-=-=-=-=-=-=-=-=-
+16 Jul 18
+* [previously below reimplement OO structure for more sanity]
+  * move UserPrefs to be a subclass of DisplayArray, or at least put them all
+    into a superclass to keep shit together that is causing issues now with
+    the fact that I can't instantiate UserPrefs.ControlGrid to access the
+    ControlGrid child class (due to the fact that there's already a UserPrefs
+    active with a GUI and all (see error in Options.UserSet.initStructs() when
+    trying to declare 'nakk' as a UserPrefs.ControlGrid in order to fill a
+    temporary record to then stuff into the data struct
+  * it's probably not the best for programmer sanity, but it could also be
+    possible to stuff the array directly, though I'm not sure how (JSON-ish?)
+* do a code scrub; take out unused variables & cruft from implementations that
+  have rendered previous shit irrelevant
+

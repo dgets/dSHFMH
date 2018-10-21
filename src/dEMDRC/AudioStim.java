@@ -14,9 +14,10 @@ public class AudioStim {
 	public AudioStim() {
 		bufferLength = (int)((Options.AStimDurInMS * Options.ASampleRate) / 1000);
 		
-		if (!Options.StereoAudio) { 
+		if (HeadsUp.uSet.customizedSettings.get("Stereo Audio") < 2) { 
 			monoToneBuffer = new byte[bufferLength];
 		} else {
+			bufferLength *= 2;	//ouah ouah ouah
 			leftStereoToneBuffer = new byte[bufferLength * 2];
 			rightStereoToneBuffer = new byte[bufferLength * 2];
 		}
@@ -33,16 +34,21 @@ public class AudioStim {
 		//int samples = (int)((Options.AStimDurInMS * Options.ASampleRate) / 1000);
 		double period = (double)(Options.ASampleRate / Options.AStimFreq);
 		
-		for (int ouah = 0; ouah < bufferLength; ouah++) {
+		for (int ouah = 0; ouah < bufferLength; ouah += 2) {
 			double angle = 2.0 * Math.PI * (ouah / period);	//yeah, I'm retentive like that
-			if (!Options.StereoAudio) { 
+			if (HeadsUp.uSet.customizedSettings.get("Stereo Audio") < 2) { 
 				monoToneBuffer[ouah] = (byte)(Math.sin(angle) * 127f);	//wut?
 			} else {
-				short nakk = (short)(Math.sin(angle) * 32767);	//not sure about this const value
+				short nakk = (short)(Math.sin(angle) * 32767);		//not sure about this const value
+				
+				/*
+				 * Haven't tested it conclusively, but I believe that these tones are playing on both channels every time there
+				 * is a bounce, instead of just in the appropriate side
+				 */
 				rightStereoToneBuffer[ouah] = (byte)(nakk & 0xFF);	//not sure if the channel side is correct here, going
 				leftStereoToneBuffer[ouah] = (byte)(nakk >> 8);		//off of a shitty text diagram in code example comments
 				rightStereoToneBuffer[ouah + 1] = 0;
-				leftStereoToneBuffer[++ouah] = 0;
+				leftStereoToneBuffer[ouah + 1] = 0;
 			}
 		}
 	}
@@ -58,17 +64,18 @@ public class AudioStim {
 		
 		//I'm thinking that the AudioFormat & SourceDataLine should probably be set up beforehand in order to decrease
 		//latency as much as possible during operations
-		if (!Options.StereoAudio) { 
+		if (HeadsUp.uSet.customizedSettings.get("Stereo Audio") < 2) { 
 			af = new AudioFormat(Options.ASampleRate, 8, 1, true, true);
 		} else {
-			af = new AudioFormat(Options.ASampleRate, 16, 1, true, false);
+			af = new AudioFormat(Options.ASampleRate, 16, 2, true, false);
 		}
+		
 		SourceDataLine line = AudioSystem.getSourceDataLine(af);
 		
 		line.open(af, Options.ASampleRate);
 		line.start();
 		
-		if (!Options.StereoAudio) {  
+		if (HeadsUp.uSet.customizedSettings.get("Stereo Audio") < 2) {  
 			line.write(monoToneBuffer, 0, bufferLength);
 		} else if (handed == Options.StereoSide.RIGHT) {
 			line.write(rightStereoToneBuffer, 0, (bufferLength * 2));

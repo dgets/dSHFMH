@@ -19,7 +19,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class HeadsUp extends Application {
-	private Timer gmt;
+	public static Timer gmt;
 	
 	private Group wutGroot = new Group();
 	private Scene kR = new Scene(wutGroot, Options.MaxX, Options.MaxY, Color.BLACK);
@@ -31,18 +31,21 @@ public class HeadsUp extends Application {
 	private static GridPane dash = new GridPane();	//also this needs to be comfortably set below kitt
 	private static Region veil = new Region();
 	
-	public static AudioStim blonk = new AudioStim();	//not sure about this being static... audio issues?
+	public static Options opts = new Options();
+	public static Options.UserSet uSet = opts.new UserSet();
+	public static AudioStim blonk;	//not sure about this being static... audio issues?
+	public static UserPrefsHandler userPrefsDisplay;
 	
-	//getters/setters
-	public GraphicsContext getGC() {
-		return gc;
-	}
-	
+	/**
+	 * I guess this would be the equivalent of our 'main()' while we're working with javafx
+	 * 
+	 */
 	@Override
 	public void start(Stage world) throws Exception {
-		//testing
-		gc = DisplayArray.swoosh(gc);
-		wutGroot.getChildren().add(ouahPad);
+		if (opts.debuggingTest()) { 
+			gc = DisplayArray.swoosh(gc);
+			wutGroot.getChildren().add(ouahPad);
+		}
 		
 		//eyes array
 		world.setScene(kR);
@@ -71,20 +74,29 @@ public class HeadsUp extends Application {
 		controls.setTitle("sooo manipulative . . .");
 		controls.show();
 		
+		if (opts.debuggingGen()) {
+			System.out.println("uSet.initStructs() is on deck");
+		}
+		uSet.initStructs();
+		//uSet.loadXMLSettings();
+		
 		toggleActive.setOnAction(new ToggleKitt());
-		goUserPrefs.setOnAction(new UserPrefs());
+		userPrefsDisplay = new UserPrefsHandler();
+		userPrefsDisplay.init();
+		goUserPrefs.setOnAction(userPrefsDisplay);
+		
+		gmt = new Timer();
+		
+		blonk = new AudioStim();
 		
 		//immediate timer activation (for testing)
-		if (Options.testing) { 
-			gmt = new Timer();
-			gmt.schedule(new BounceTask(), (Options.DefaultPauseInMS / DisplayArray.determineEyesInArray(Options.MaxX)));
-			
-			//AudioStim.playAudioStim(Options.StereoSide.LEFT);
+		if (opts.debuggingTest()) { 
+			toggleActive.setText("Stop");
+			scheduleBounce();
 		}
 		
 		//any init for other objects
-		UserPrefs.setWorldXY(world.getX(), world.getY());	//not working
-		
+		userPrefsDisplay.setWorldXY(world.getX(), world.getY());	//working?
 	}
 	
 	/**
@@ -119,42 +131,59 @@ public class HeadsUp extends Application {
 		dash.setDisable(false);
 		veil.setVisible(false);
 	}
+	
+	/**
+	 * Just a wrapper for scheduling a new bounce task so that we're not duplicating so much code
+	 */
+	public void scheduleBounce() {
+		gmt.schedule(new BounceTask(), (Options.DefaultPauseInMS / DisplayArray.determineEyesInArray(Options.MaxX)));
+	}
 
 	//weird subclasses
 	private class ToggleKitt implements EventHandler<ActionEvent> {
-		private boolean running;
+		public boolean running;
 		
 		//need the constructor nao
 		public ToggleKitt() {
-			if (Options.testing) {
+			if (opts.debuggingTest()) {
 				running = true;
 			} else {
 				running = false;
 			}
 		}
 
+		//default button handler
 		@Override
 		public void handle(ActionEvent arg0) {
+			toggle();
+		}
+		
+		/**
+		 * Method toggles the status of the running flag, starts or cancels the timer scheduling depending on what running state
+		 * we're going into, and toggles the text of the toggleActive button
+		 */
+		public void toggle() {
 			running = !running;
 			
 			if (running) {
-				gmt.schedule(new BounceTask(), (Options.DefaultPauseInMS / DisplayArray.determineEyesInArray(Options.MaxX)));
+				scheduleBounce();
 				toggleActive.setText("Stop");
 			} else {
 				gmt.cancel();
 				toggleActive.setText("Start");
 			}
 		}
-		
 	}
 	
-	private class BounceTask extends TimerTask {
+	public class BounceTask extends TimerTask {
 		public void run() {
 			DisplayArray.swoosh(gc);
 			
 			if (DisplayArray.moreRemaining()) {
-				//this.remaining--;
 				gmt.schedule(new BounceTask(), (Options.DefaultPauseInMS / DisplayArray.determineEyesInArray(Options.MaxX)));
+			} else {
+				//we need to change the controls (start/stop) status nao
+				toggleActive.setText("Start");
 			}
 		}
 	}
