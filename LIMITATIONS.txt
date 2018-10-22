@@ -1,0 +1,10 @@
+--++==** Limitations of dSHFMH **==++--
+
+  * audio stim not working in stereo (the only useful mode for it, of course)
+  * tactile stim hasn't been started
+  * pause/restart functionality is broken
+  * settings can't be changed
+  * there are probably more technical ones
+  * therapy with this program is based on untested and heavily biassed
+    personal experience
+
