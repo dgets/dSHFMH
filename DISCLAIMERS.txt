@@ -1,0 +1,43 @@
+--++==** dSHFMH has inherent limitations **==++--
+
+First of all, and most importantly, dSHFMH may not be able to help you with
+anything whatsoever!  I have created this application off of concepts that I
+had explained to me by a licensed EMDR therapist.  I am not attempting to
+recreate that experience in any way, simply to find an effective way to
+stimulate, in an alternating manner, the person's senses in a way that will
+promote reprocessing of events via both hemispheres of the brain.
+
+Second, it should be noted that, after moving on to another therapist and
+engaging in EMDR therapy for PTSD myself, I have received direct warnings from
+my licensed professional against engaging in anything similar to EMDR when
+alone.  Apparently the EMDR training crew advises against this due to the
+potential for a person to get 'stuck' in some kind of looping mental state.  I
+do not know the fundamentals behind this in the slightest, and can make no
+guess as to whether or not these are valid concerns, or scare tactics to try
+to keep people 'in house' with their sales and marketing.  It seems to me
+that, based on layperson level research of hypnotic and hypnogogic states,
+there is a small potential for people succeptible to such states to have them
+activated by this software.  Thus, I do not advocate for anybody using this
+alone; hell, I don't advocate anybody using this at all, especially on a basis
+of personal liability.  I'm only putting it up because, in a pinch due to the
+understaffing of mental health professionals where I'm at in the world, it
+seemed to help me with an issue that could've negatively affected my family in
+a profound way, even to the point of homelessness.  So if anybody decides to
+disregard my warnings regarding this project, I hope it brings you some help,
+but understand that you're not doing so with my express permission-- quite the
+opposite.  I do hope it helps, though.
+
+Third, and finally, please be aware that this is a wicked rough version of
+this code.  Basically, nothing works other than the 'light bar' functionality,
+due to bugs that I'm currently trying to work out of the code.  You can't
+change settings, you can't save settings, you can't do anything except for
+run the program, at this stage, at which point it will immediately go into a
+5-minute session of light bar therapy.  If you want a shorter amount of time
+for your session, you'll have to set your own timer, if you're inadvisedly
+using this program for hemisphere switching.  If you want longer, you're going
+to have to play with the source code or wait for my updates.  Hell, you can't
+even pause and restart your sessions at this point; when you pause it, a bug
+occurs that will fubar execution of the program.
+
+Be safe, don't use this.
+
